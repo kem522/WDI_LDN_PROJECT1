@@ -5,38 +5,63 @@ $(() => {
   //Variables
   const $cells = $('li');
   const cells = [].slice.call($('li'));
-  const key = document.addEventListener('keydown', (e) => e.which);
-
   const lastCell = cells.length-1;
-  console.log(lastCell);
+  let timerId = null;
+  let shape = null;
 
   //Objects
-  class Square {
-    constructor() {
-      this.sq1 = 0;
-      this.sq2 = this.sq1 + 1;
-      this.sq3 = this.sq1 + 10;
-      this.sq4 = this.sq2 + 10;
-    }
-  }
+  // class Square {
+  //   constructor() {
+  //     this.sq1 = 0;
+  //     this.sq2 = this.sq1 + 1;
+  //     this.sq3 = this.sq1 + 10;
+  //     this.sq4 = this.sq2 + 10;
+  //   }
+  // }
 
-  const square = new Square();
-  cellChange();
+  const square = [0, 1, 10, 11];
+  const newsquare = [0, 1, 10, 11];
+  const shapes = [square, newsquare];
+
+  // const square = new Square();
+  // shape = square;
+
+  shapes.forEach((el) => {
+    shape = el;
+    cellChange();
+    timerId = setInterval(move,1000);
+  });
+
+  //Functions
+
+  // function cellChange() {
+  //   cells.forEach((cell, i) => {
+  //     console.log(shape);
+  //     if (Object.values(shape).includes(i)) $(cell).addClass('red');
+  //     else $(cell).removeClass('red');
+  //   });
+  // }
 
   function cellChange() {
     cells.forEach((cell, i) => {
-      if (Object.values(square).includes(i)) $(cell).addClass('red');
+      if (shape.includes(i)) $(cell).addClass('red');
       else $(cell).removeClass('red');
     });
   }
 
-  const timerId = setInterval(() => {
-    square.sq1 += key;
-    square.sq2 = square.sq1 + 1;
-    square.sq3 = square.sq1 + 10;
-    square.sq4 = square.sq2 + 10;
-    if (Object.values(square).some((sq) => sq > lastCell)) clearInterval(timerId);
-    else cellChange();
-  },1000);
+  function move() {
+    shape[0] += 10;
+    shape[1] = shape[0] + 1;
+    shape[2] = shape[0] + 10;
+    shape[3] = shape[1] + 10;
+    if (shape.some((sq) => sq > lastCell)) {
+      cells.forEach(cell => {
+        if ($(cell).hasClass('red')) $(cell).addClass('fixed');
+      });
+      clearInterval(timerId);
+    } else {
+      cellChange();
+    }
+  }
 
 });
