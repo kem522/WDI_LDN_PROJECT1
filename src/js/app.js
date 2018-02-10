@@ -5,67 +5,46 @@ $(() => {
   //Variables
   // const $cells = $('li');
   const cells = [].slice.call($('li'));
+  const $h2 = $('h2');
   const lastCell = cells.length-1;
   let timerId = null;
   let shape = null;
-
-  //OBJECT STUFF
-  //Objects
-  // class Square {
-  //   constructor() {
-  //     this.sq1 = 0;
-  //     this.sq2 = this.sq1 + 1;
-  //     this.sq3 = this.sq1 + 10;
-  //     this.sq4 = this.sq2 + 10;
-  //   }
-  // }
-  //
-  // const square = new Square();
-  // shape = square;
-  // timerId = setInterval(move, 1000);
+  let color = '';
+  let playing = true;
 
   //ARRAY STUFF
-  let shapes= [[0,1,10,11],[0,1,10,11]];
-  console.log(shape);
+  let shapes= [[0,1,10,11], [0,1,2,10], [0,1,2,11],[0,1,11,12],[0,1,2,3]];
+  const colors = ['red','blue','yellow','green'];
   gamePlay();
 
+  function checkLoss() {
+    for (let i = 0; i < 10; i++) {
+      if ($(cells[i]).hasClass('color')) {
+        playing = false;
+        clearInterval(timerId);
+        $h2.text('You Lose!');
+      }
+    }
+    console.log(playing);
+  }
+
   function gamePlay() {
-    console.log(shapes);
+    setTimeout(checkLoss, 2000);
     console.log('started loop');
+    color = colors[Math.floor(Math.random()*colors.length)];
+    // console.log(color);
     shape = shapes[Math.floor(Math.random()*shapes.length)];
     cellChange();
-    timerId = setInterval(move, 1000);
+    timerId = setInterval(move, 100);
   }
   //Functions
-  //OBJECT VERSIONS
-  // function cellChange() {
-  //   cells.forEach((cell, i) => {
-  //     console.log(shape);
-  //     if (Object.values(shape).includes(i)) $(cell).addClass('red');
-  //     else $(cell).removeClass('red');
-  //   });
-  // }
-
-  // function move() {
-  //   shape.sq1 += 10;
-  //   shape.sq2 = shape.sq1 + 1;
-  //   shape.sq3 = shape.sq1 + 10;
-  //   shape.sq4 = shape.sq2 + 10;
-  //   if (Object.values(shape).some((sq) => sq > lastCell)) {
-  //     cells.forEach(cell => {
-  //       if ($(cell).hasClass('red')) $(cell).addClass('fixed');
-  //     });
-  //     clearInterval(timerId);
-  //   } else {
-  //     cellChange();
-  //   }
-  // }
-
-  //ARRAY VERSIONS
   function cellChange() {
     cells.forEach((cell, i) => {
-      if (shape.includes(i)) $(cell).addClass('red');
-      else $(cell).removeClass('red');
+      if (shape.includes(i)) {
+        $(cell).addClass('color').css({backgroundColor: color});
+      } else {
+        $(cell).removeClass('color').removeAttr('style');
+      }
     });
   }
 
@@ -76,10 +55,10 @@ $(() => {
     shape[3] = shape[3] + 10;
     if (shape.some((sq) => sq > lastCell || shape.some((sq) => $(cells[sq]).hasClass('fixed')))) {
       cells.forEach(cell => {
-        if ($(cell).hasClass('red')) $(cell).addClass('fixed');
+        if ($(cell).hasClass('color')) $(cell).addClass('fixed').attr('style',`backgroundColor:${color}`);
       });
       clearInterval(timerId);
-      shapes = [[0,1,10,11],[0,1,10,11]];
+      shapes= [[0,1,10,11], [0,1,2,10], [0,1,2,11],[0,1,11,12]];
       gamePlay();
     } else {
       cellChange();
