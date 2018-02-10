@@ -11,8 +11,7 @@ $(() => {
   let key = '';
   let color = '';
 
-  let shapes= [[0,1,10,11]];
-  // [0,1,2,10], [0,1,2,11],[0,1,11,12],[0,1,2,3]];
+  let shapes= [[4,5,14,15],[4,5,14,24], [4,5,15,25],[4,14,15,25], [4,5,6,7],[5,14,15,24],[5,14,15,16]];
   const colors = ['red','blue','yellow','green'];
 
 
@@ -57,7 +56,6 @@ $(() => {
         }
       });
       if (clear)  {
-        //Currently adding a shit ton of extra lis, only stops when I reassign cells here, but then the delay causes problems when the new shape is created
         rowsArray[i].forEach((el) => $(cells[el]).remove());
         $ul.prepend('<li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li>');
         cells = [].slice.call($('li'));
@@ -71,7 +69,6 @@ $(() => {
     color = colors[Math.floor(Math.random()*colors.length)];
     shape = shapes[Math.floor(Math.random()*shapes.length)];
     cellChange();
-    // cells = [].slice.call($('li'));
     timerId = setInterval(move, 500);
   }
 
@@ -88,7 +85,7 @@ $(() => {
   function move() {
     horizontalMove();
     shape[0] += 10;
-    shape[1] = shape[0] + 1;
+    shape[1] = shape[1] + 10;
     shape[2] = shape[2] + 10;
     shape[3] = shape[3] + 10;
     checkForEnd();
@@ -128,8 +125,7 @@ $(() => {
         if ($(cell).hasClass('color')) $(cell).addClass('fixed');
       });
       clearInterval(timerId);
-      shapes= [[0,1,10,11]];
-      // [0,1,2,10], [0,1,2,11],[0,1,11,12]];
+      shapes = [[4,5,14,15],[4,5,14,24], [4,5,15,25],[4,14,15,25], [4,5,6,7],[5,14,15,24],[5,14,15,16]];
       gamePlay();
     } else {
       cellChange();
