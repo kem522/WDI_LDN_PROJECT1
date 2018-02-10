@@ -2,16 +2,14 @@ $(() => {
   console.log('JS Loaded');
 
   //Variables
-  // const $cells = $('li');
-  const cells = [].slice.call($('li'));
+  let cells = [].slice.call($('li'));
+  const $ul = $('ul');
   const $h2 = $('h2');
   const lastCell = cells.length-1;
   let timerId = null;
   let shape = null;
   let key = '';
   let color = '';
-  const rows = 16;
-  const columns = 10;
   // let playing = true;
 
   let shapes= [[0,1,10,11]];
@@ -49,6 +47,7 @@ $(() => {
     }
   }
 
+
   function checkRow() {
     for (let i = 0; i < rowsArray.length; i++) {
       let clear = true;
@@ -57,7 +56,12 @@ $(() => {
           clear = false;
         }
       });
-      if (clear) rowsArray[i].forEach((el) => $(cells[el]).remove());
+      if (clear)  {
+        clear = false;
+        rowsArray[i].forEach((el) => $(cells[el]).remove());
+        $ul.prepend('<li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li>');
+        cells = [].slice.call($('li'));
+      }
     }
   }
 
@@ -120,7 +124,7 @@ $(() => {
   function checkForEnd() {
     if (shape.some((sq) => sq > lastCell || shape.some((sq) => $(cells[sq]).hasClass('fixed')))) {
       cells.forEach(cell => {
-        if ($(cell).hasClass('color')) $(cell).addClass('fixed').attr('style',`backgroundColor:${color}`);
+        if ($(cell).hasClass('color')) $(cell).addClass('fixed');
       });
       clearInterval(timerId);
       shapes= [[0,1,10,11]];
