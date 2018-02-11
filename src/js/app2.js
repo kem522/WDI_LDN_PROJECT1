@@ -10,12 +10,18 @@ $(() => {
   let shape = null;
   let key = '';
   let color = '';
-  let score = 0;
-  const $scoreboard = $('.scoreboard');
-  // let rotate = 0;
 
+  class Square {
+    constructor() {
+      this.shape = 'square';
+      this.initial = [4,5,14,15];
+      this.reset = [4,5,14,15];
+    }
+  }
 
-  let shapes= [[4,5,14,15,'O'],[4,5,14,24,'J'], [4,5,15,25,'L'],[4,14,15,25,'S'], [4,5,6,7,'I'],[5,14,15,24, 'Z'],[5,14,15,16,'T']];
+  const square = new Square();
+
+  let shapes = [square];
   const colors = ['red','blue','yellow','green'];
 
   const rowsArray = [
@@ -62,9 +68,6 @@ $(() => {
         rowsArray[i].forEach((el) => $(cells[el]).remove());
         $ul.prepend('<li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li>');
         cells = [].slice.call($('li'));
-        score += 100;
-        $scoreboard.text(`Your score is: ${score}`);
-
       }
     }
   }
@@ -74,13 +77,14 @@ $(() => {
     setTimeout(checkLoss, 2000);
     color = colors[Math.floor(Math.random()*colors.length)];
     shape = shapes[Math.floor(Math.random()*shapes.length)];
+    console.log(shape);
     cellChange();
     timerId = setInterval(move, 500);
   }
 
   function cellChange() {
     cells.forEach((cell, i) => {
-      if (shape.includes(i)) {
+      if (shape.initial.includes(i)) {
         $(cell).addClass('color').css({backgroundColor: color});
       } else {
         $(cell).removeClass('color').removeAttr('style');
@@ -90,10 +94,10 @@ $(() => {
 
   function move() {
     horizontalMove();
-    shape[0] += 10;
-    shape[1] = shape[1] + 10;
-    shape[2] = shape[2] + 10;
-    shape[3] = shape[3] + 10;
+    shape.initial[0] += 10;
+    shape.initial[1] += 10;
+    shape.initial[2] += 10;
+    shape.initial[3] += 10;
     checkForEnd();
   }
 
@@ -101,49 +105,38 @@ $(() => {
     let exit = false;
     switch (key) {
       case 'ArrowRight':
-        shape.forEach((el) => {
+        shape.initial.forEach((el) => {
           if (el % 10 === 10-1) exit = true;
         });
         if (exit === false) {
-          shape[0] += 1;
-          shape[1] += 1;
-          shape[2] += 1;
-          shape[3] += 1;
+          shape.initial[0] += 1;
+          shape.initial[1] += 1;
+          shape.initial[2] += 1;
+          shape.initial[3] += 1;
         }
         break;
       case 'ArrowLeft':
-        shape.forEach((el) => {
+        shape.initial.forEach((el) => {
           if (el % 10 === 0) exit = true;
         });
         if (exit === false) {
-          shape[0] -= 1;
-          shape[1] -= 1;
-          shape[2] -= 1;
-          shape[3] -= 1;
+          shape.initial[0] -= 1;
+          shape.initial[1] -= 1;
+          shape.initial[2] -= 1;
+          shape.initial[3] -= 1;
         }
-        break;
-      // case 'ArrowUp':
-      //   if (shape[4] === 'J') rotateJ();
     }
     key = '';
   }
 
-  // function rotateJ() {
-  //   const shape0 = [shape[2] + 1,shape[2] + 10, shape[2] - 1,shape[2] - 10];
-  //   const shape1 = [shape[2] + 11, shape[2] + 9, shape[2] - 11,shape[2] - 9];
-  //   const shape3 = [shape[2] - 1,shape[2] - 10, shape[2] + 1,shape[2] + 10];
-  //   shape[0] = shape0[rotate-1];
-  //   shape[1] = shape1[rotate-1];
-  //   shape[3] = shape3[rotate-1];
-  // }
-
   function checkForEnd() {
-    if (shape.some((sq) => sq > lastCell || shape.some((sq) => $(cells[sq]).hasClass('fixed')))) {
+    if (shape.initial.some((sq) => sq > lastCell || shape.initial.some((sq) => $(cells[sq]).hasClass('fixed')))) {
       cells.forEach(cell => {
         if ($(cell).hasClass('color')) $(cell).addClass('fixed');
       });
+      shape.initial = shape.reset;
+      shapes = [square];
       clearInterval(timerId);
-      shapes = [[4,5,14,15,'O'],[4,5,14,24,'J'], [4,5,15,25,'L'],[4,14,15,25,'S'], [4,5,6,7,'I'],[5,14,15,24, 'Z'],[5,14,15,16,'T']];
       gamePlay();
     } else {
       cellChange();
@@ -155,11 +148,7 @@ $(() => {
     var keyCode = e.keyCode;
     if(keyCode === 39) key = 'ArrowRight';
     else if (keyCode === 37) key = 'ArrowLeft';
-    else if (keyCode === 38) {
-      key = 'ArrowUp';
-      // if (rotate < 4) rotate++;
-      // else rotate = 0;
-    }
+    else if (keyCode === 30) key = 'ArrowUp';
   }
 
   //Event Listeners
