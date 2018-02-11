@@ -115,15 +115,16 @@ $(() => {
         }
         break;
       case 'ArrowUp':
+        if (rotate < 4) rotate++;
+        else rotate = 1;
         if (shape.includes('J')) rotateJ();
         if (shape.includes('L')) rotateL();
+        if (shape.includes('S')) rotateS();
     }
     key = '';
   }
 
   function rotateJ() {
-    if (rotate < 4) rotate++;
-    else rotate = 1;
     const shape0 = [shape[2] + 1,shape[2] + 10, shape[2] - 1,shape[2] - 10];
     const shape1 = [shape[2] + 11, shape[2] + 9, shape[2] - 11,shape[2] - 9];
     const shape3 = [shape[2] - 1,shape[2] - 10, shape[2] + 1,shape[2] + 10];
@@ -133,10 +134,17 @@ $(() => {
   }
 
   function rotateL() {
-    if (rotate < 4) rotate++;
-    else rotate = 1;
     const shape0 = [shape[2] - 9,shape[2] + 11, shape[2] + 9,shape[2] - 11];
     const shape1 = [shape[2] + 1, shape[2] + 10, shape[2] - 1,shape[2] - 10];
+    const shape3 = [shape[2] - 1,shape[2] - 10, shape[2] + 1,shape[2] + 10];
+    shape[0] = shape0[rotate-1];
+    shape[1] = shape1[rotate-1];
+    shape[3] = shape3[rotate-1];
+  }
+
+  function rotateS() {
+    const shape0 = [shape[2] - 9,shape[2] + 11, shape[2] + 9,shape[2] - 11];
+    const shape1 = [shape[2] - 10, shape[2] + 1, shape[2] + 10,shape[2] - 1];
     const shape3 = [shape[2] - 1,shape[2] - 10, shape[2] + 1,shape[2] + 10];
     shape[0] = shape0[rotate-1];
     shape[1] = shape1[rotate-1];
