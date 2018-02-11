@@ -120,6 +120,7 @@ $(() => {
         if (shape.includes('J')) rotateJ();
         if (shape.includes('L')) rotateL();
         if (shape.includes('S')) rotateS();
+        if (shape.includes('I')) rotateI();
     }
     key = '';
   }
@@ -146,6 +147,15 @@ $(() => {
     const shape0 = [shape[2] - 9,shape[2] + 11, shape[2] + 9,shape[2] - 11];
     const shape1 = [shape[2] - 10, shape[2] + 1, shape[2] + 10,shape[2] - 1];
     const shape3 = [shape[2] - 1,shape[2] - 10, shape[2] + 1,shape[2] + 10];
+    shape[0] = shape0[rotate-1];
+    shape[1] = shape1[rotate-1];
+    shape[3] = shape3[rotate-1];
+  }
+
+  function rotateI() {
+    const shape0 = [shape[2] - 20,shape[2] + 2, shape[2] + 20,shape[2] - 2];
+    const shape1 = [shape[2] - 10, shape[2] + 1, shape[2] + 10,shape[2] - 1];
+    const shape3 = [shape[2] + 10,shape[2] - 1, shape[2] - 10, shape[2] + 1];
     shape[0] = shape0[rotate-1];
     shape[1] = shape1[rotate-1];
     shape[3] = shape3[rotate-1];
