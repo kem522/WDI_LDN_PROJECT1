@@ -51,26 +51,6 @@ $(() => {
     }
   }
 
-
-  function checkRow() {
-    for (let i = 0; i < rowsArray.length; i++) {
-      let clear = true;
-      rowsArray[i].forEach((el) => {
-        if (!$(cells[el]).hasClass('fixed')) {
-          clear = false;
-        }
-      });
-      if (clear)  {
-        rowsArray[i].forEach((el) => $(cells[el]).remove());
-        $ul.prepend('<li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li>');
-        cells = [].slice.call($('li'));
-        score += 100;
-        $scoreboard.text(`Your score is: ${score}`);
-
-      }
-    }
-  }
-
   function gamePlay() {
     checkRow();
     setTimeout(checkLoss, 2000);
@@ -78,6 +58,15 @@ $(() => {
     shape = shapes[Math.floor(Math.random()*shapes.length)];
     cellChange();
     timerId = setInterval(move, 500);
+  }
+
+  function move() {
+    horizontalMove();
+    shape[0] += 10;
+    shape[1] = shape[1] + 10;
+    shape[2] = shape[2] + 10;
+    shape[3] = shape[3] + 10;
+    checkForEnd();
   }
 
   function cellChange() {
@@ -90,13 +79,14 @@ $(() => {
     });
   }
 
-  function move() {
-    horizontalMove();
-    shape[0] += 10;
-    shape[1] = shape[1] + 10;
-    shape[2] = shape[2] + 10;
-    shape[3] = shape[3] + 10;
-    checkForEnd();
+  function keyDown(e) {
+    var keyCode = e.keyCode;
+    if(keyCode === 39) key = 'ArrowRight';
+    else if (keyCode === 37) key = 'ArrowLeft';
+    else if (keyCode === 38) {
+      key = 'ArrowUp';
+
+    }
   }
 
   function horizontalMove() {
@@ -125,7 +115,8 @@ $(() => {
         }
         break;
       case 'ArrowUp':
-        if (shape[4] === 'J') rotateJ();
+        if (shape.includes('J')) rotateJ();
+        if (shape.includes('L')) rotateL();
     }
     key = '';
   }
@@ -135,6 +126,17 @@ $(() => {
     else rotate = 1;
     const shape0 = [shape[2] + 1,shape[2] + 10, shape[2] - 1,shape[2] - 10];
     const shape1 = [shape[2] + 11, shape[2] + 9, shape[2] - 11,shape[2] - 9];
+    const shape3 = [shape[2] - 1,shape[2] - 10, shape[2] + 1,shape[2] + 10];
+    shape[0] = shape0[rotate-1];
+    shape[1] = shape1[rotate-1];
+    shape[3] = shape3[rotate-1];
+  }
+
+  function rotateL() {
+    if (rotate < 4) rotate++;
+    else rotate = 1;
+    const shape0 = [shape[2] - 9,shape[2] + 11, shape[2] + 9,shape[2] - 11];
+    const shape1 = [shape[2] + 1, shape[2] + 10, shape[2] - 1,shape[2] - 10];
     const shape3 = [shape[2] - 1,shape[2] - 10, shape[2] + 1,shape[2] + 10];
     shape[0] = shape0[rotate-1];
     shape[1] = shape1[rotate-1];
@@ -165,14 +167,22 @@ $(() => {
     }
   }
 
+  function checkRow() {
+    for (let i = 0; i < rowsArray.length; i++) {
+      let clear = true;
+      rowsArray[i].forEach((el) => {
+        if (!$(cells[el]).hasClass('fixed')) {
+          clear = false;
+        }
+      });
+      if (clear)  {
+        rowsArray[i].forEach((el) => $(cells[el]).remove());
+        $ul.prepend('<li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li>');
+        cells = [].slice.call($('li'));
+        score += 100;
+        $scoreboard.text(`Your score is: ${score}`);
 
-  function keyDown(e) {
-    var keyCode = e.keyCode;
-    if(keyCode === 39) key = 'ArrowRight';
-    else if (keyCode === 37) key = 'ArrowLeft';
-    else if (keyCode === 38) {
-      key = 'ArrowUp';
-
+      }
     }
   }
 
