@@ -6,13 +6,16 @@ $(() => {
   const $ul = $('ul');
   const $h2 = $('h2');
   const lastCell = cells.length-1;
+  const $startBtn = $('.start');
+  const $pauseBtn = $('.pause');
   let timerId = null;
   let shape = null;
   let key = '';
   let color = '';
   let score = 0;
   const $scoreboard = $('.scoreboard');
-  // let rotate = 0;
+  let playing = true;
+  let rotate = 0;
 
 
   let shapes= [[4,5,14,15,'O'],[4,5,14,24,'J'], [4,5,15,25,'L'],[4,14,15,25,'S'], [4,5,6,7,'I'],[5,14,15,24, 'Z'],[5,14,15,16,'T']];
@@ -37,7 +40,6 @@ $(() => {
     [150,151,152,153,154,155,156,157,158,159]
   ];
 
-  gamePlay();
 
   //Functions
   function checkLoss() {
@@ -122,27 +124,40 @@ $(() => {
           shape[3] -= 1;
         }
         break;
-      // case 'ArrowUp':
-      //   if (shape[4] === 'J') rotateJ();
+      case 'ArrowUp':
+        if (shape[4] === 'J') rotateJ();
     }
     key = '';
   }
 
-  // function rotateJ() {
-  //   const shape0 = [shape[2] + 1,shape[2] + 10, shape[2] - 1,shape[2] - 10];
-  //   const shape1 = [shape[2] + 11, shape[2] + 9, shape[2] - 11,shape[2] - 9];
-  //   const shape3 = [shape[2] - 1,shape[2] - 10, shape[2] + 1,shape[2] + 10];
-  //   shape[0] = shape0[rotate-1];
-  //   shape[1] = shape1[rotate-1];
-  //   shape[3] = shape3[rotate-1];
-  // }
+  function rotateJ() {
+    if (rotate < 4) rotate++;
+    else rotate = 1;
+    const shape0 = [shape[2] + 1,shape[2] + 10, shape[2] - 1,shape[2] - 10];
+    const shape1 = [shape[2] + 11, shape[2] + 9, shape[2] - 11,shape[2] - 9];
+    const shape3 = [shape[2] - 1,shape[2] - 10, shape[2] + 1,shape[2] + 10];
+    shape[0] = shape0[rotate-1];
+    shape[1] = shape1[rotate-1];
+    shape[3] = shape3[rotate-1];
+  }
+
+  function pause() {
+    if (playing) {
+      playing = false;
+      clearInterval(timerId);
+    } else {
+      setInterval(move, 500);
+      playing = true;
+    }
+  }
 
   function checkForEnd() {
     if (shape.some((sq) => sq > lastCell || shape.some((sq) => $(cells[sq]).hasClass('fixed')))) {
+      clearInterval(timerId);
+      // shape.forEach((i) => $(cells[i]).addClass(`fixed, ${color}`));
       cells.forEach(cell => {
         if ($(cell).hasClass('color')) $(cell).addClass('fixed');
       });
-      clearInterval(timerId);
       shapes = [[4,5,14,15,'O'],[4,5,14,24,'J'], [4,5,15,25,'L'],[4,14,15,25,'S'], [4,5,6,7,'I'],[5,14,15,24, 'Z'],[5,14,15,16,'T']];
       gamePlay();
     } else {
@@ -157,12 +172,12 @@ $(() => {
     else if (keyCode === 37) key = 'ArrowLeft';
     else if (keyCode === 38) {
       key = 'ArrowUp';
-      // if (rotate < 4) rotate++;
-      // else rotate = 0;
+
     }
   }
 
   //Event Listeners
   document.addEventListener('keydown', keyDown, false);
-
+  $startBtn.on('click', gamePlay);
+  $pauseBtn.on('click', pause);
 });
