@@ -8,7 +8,6 @@ $(() => {
   const lastCell = cells.length-1;
   const $startBtn = $('.start');
   // const $pauseBtn = $('.pause');
-  // let playing = true;
   let timerId = null;
   let shape = null;
   let key = '';
@@ -51,26 +50,25 @@ $(() => {
 
   function gamePlay() {
     checkRow();
-    setTimeout(checkLoss, 2000);
+    setTimeout(checkLoss, 6000);
     color = colors[Math.floor(Math.random()*colors.length)];
-    // rotate = 0;
     shape = shapes[Math.floor(Math.random()*shapes.length)];
     cellChange();
-    timerId = setInterval(move, 500);
+    timerId = setInterval(move, 1000);
   }
 
   function move() {
     horizontalMove();
-    shape = shape.map((i) => i += 10);
     checkForEnd();
+    shape = shape.map((i) => i += 10);
   }
 
   function cellChange() {
     cells.forEach((cell, i) => {
       if (shape.includes(i)) {
-        $(cell).addClass('color').css({backgroundColor: color});
+        $(cell).addClass(`color ${color}`).css({backgroundColor: color});
       } else {
-        $(cell).removeClass('color').removeAttr('style');
+        $(cell).removeClass(`color ${color}`).removeAttr('style');
       }
     });
   }
@@ -104,30 +102,50 @@ $(() => {
     key = '';
   }
 
+
   function rotateShape() {
-    for (let i = 0; i < shape.length; i++) {
-      const diff = Math.abs(shape[2] - shape[i]);
+    let canMoveShape = true;
+    let length = shape.length;
+    let newIndex = 0;
+    while(length-- && canMoveShape) {
+      const diff = Math.abs(shape[2] - shape[length]);
       switch (diff) {
-        case (1):
-          shape[i] = (shape[i] < shape[2]) ? shape[2] - 10 : shape[i] = shape[2] + 10;
+        case 1:
+          newIndex = shape[length] < shape[2] ? shape[2] - 10 : shape[2] + 10;
+          if (shape[2] % 10 <= 1) canMoveShape = newIndex % 10 !== 9 && newIndex % 10 !== 8;
+          else if (shape[2] % 10 >= 8) canMoveShape =  newIndex % 10 !== 0 && newIndex % 10 !== 1;
+          if(canMoveShape) shape[length] = newIndex;
           break;
-        case (10):
-          shape[i] = (shape[i] < shape[2]) ? shape[2] + 1 : shape[i] = shape[2] - 1;
+        case 10:
+          newIndex = (shape[length] < shape[2]) ? shape[2] + 1 : shape[2] - 1;
+          if (shape[2] % 10 <= 1) canMoveShape = newIndex % 10 !== 9 && newIndex % 10 !== 8;
+          else if (shape[2] % 10 >= 8) canMoveShape =  newIndex % 10 !== 0 && newIndex % 10 !== 1;
+          if(canMoveShape) shape[length] = newIndex;
           break;
-        case (9):
-          shape[i] = (shape[i] < shape[2]) ? shape[2] + 11 : shape[2] - 11;
+        case 9:
+          newIndex = (shape[length] < shape[2]) ? shape[2] + 11 : shape[2] - 11;
+          if (shape[2] % 10 <= 1) canMoveShape = newIndex % 10 !== 9 && newIndex % 10 !== 8;
+          else if (shape[2] % 10 >= 8) canMoveShape =  newIndex % 10 !== 0 && newIndex % 10 !== 1;
+          if(canMoveShape) shape[length] = newIndex;
           break;
-        case (11):
-          shape[i] = (shape[i] < shape[2]) ? shape[2] - 9 : shape[2] + 9;
+        case 11:
+          newIndex = (shape[length] < shape[2]) ? shape[2] - 9 : shape[2] + 9;
+          if (shape[2] % 10 <= 1) canMoveShape = newIndex % 10 !== 9 && newIndex % 10 !== 8;
+          else if (shape[2] % 10 >= 8) canMoveShape =  newIndex % 10 !== 0 && newIndex % 10 !== 1;
+          if(canMoveShape) shape[length] = newIndex;
           break;
-        case (20):
-          shape[i] =  (shape[i] < shape[2]) ? shape[2] + 2 : shape[2] - 2;
+        case 20:
+          newIndex =  (shape[length] < shape[2]) ? shape[2] + 2 : shape[2] - 2;
+          if (shape[2] % 10 <= 1) canMoveShape = newIndex % 10 !== 9 && newIndex % 10 !== 8;
+          else if (shape[2] % 10 >= 8) canMoveShape =  newIndex % 10 !== 0 && newIndex % 10 !== 1;
+          if(canMoveShape) shape[length] = newIndex;
           break;
-        case (2):
-          shape[i] =  (shape[i] < shape[2]) ? shape[2] - 20 : shape[2] + 20;
+        case 2:
+          newIndex =  (shape[length] < shape[2]) ? shape[2] - 20 : shape[2] + 20;
+          if (shape[2] % 10 <= 1) canMoveShape = newIndex % 10 !== 9 && newIndex % 10 !== 8;
+          else if (shape[2] % 10 >= 8) canMoveShape =  newIndex % 10 !== 0 && newIndex % 10 !== 1;
+          if(canMoveShape) shape[length] = newIndex;
           break;
-        default:
-          shape[i] = shape[i];
       }
     }
   }
@@ -135,7 +153,6 @@ $(() => {
   function checkForEnd() {
     if (shape.some((sq) => sq > lastCell || shape.some((sq) => $(cells[sq]).hasClass('fixed')))) {
       clearInterval(timerId);
-      // shape.forEach((i) => $(cells[i]).addClass(`fixed, ${color}`));
       cells.forEach(cell => {
         if ($(cell).hasClass('color')) $(cell).addClass('fixed');
       });
