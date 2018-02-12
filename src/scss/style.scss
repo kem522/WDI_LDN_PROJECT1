@@ -1,5 +1,15 @@
-body {
+// body {
+//
+//   background-color: linear-gradient(to bottom, #1a82f7, #2F2727);
+//
+// }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
   font-family:'Press Start 2P', cursive;
+  background: linear-gradient(to bottom, blue, white);
 }
 
 h1 {
@@ -9,45 +19,72 @@ h1 {
 .container {
   display:flex;
   justify-content: space-around;
+  max-width:960px;
+  margin: 0 auto;
 }
 
 ul {
   display: flex;
   flex-wrap: wrap;
-  width: 330px;
+  width: 220px;
   margin: 0;
   padding: 0;
   list-style: none;
   margin: auto;
     li {
       border: 1px solid;
-      height: 30px;
-      width: 30px;
+      height: 20px;
+      width: 20px;
       font-size: 30px;
       line-height: 30px;
+      background-color:transparent;
     }
   }
 
-.color {
-  // box-shadow: rgba(0,0,0, 0.5) 0px 5px 5px 0px;
+.info {
+  max-width:480px;
+  text-align:center;
 }
 
-  // .red {
-  //   background-color: red;
-  // }
-  //
-  // .green {
-  //   background-color: green;;
-  // }
-  //
-  // .yellow {
-  //   bakground-color: yellow;
-  // }
-  //
-  // .blue {
-  //   background-color: blue;
-  // }
+img {
+  max-width:100%;
+}
+
+.color {
+  // box-shadow: rgba(0,0,0, 0.5) 0px 1px 1px 0px inset;
+   box-shadow: inset -14px -14px 15px -17px rgba(0,0,0,0.75);
+}
+
+
 
 .fixed {
-  background-color: grey;
+  box-shadow: inset -14px -14px 15px -17px rgba(0,0,0,0.75);
+}
+
+.red {
+  background-color: #fc0e1b;
+}
+
+.green {
+  background-color: #29fd2f;
+}
+
+.yellow {
+  background-color: #f6d331;
+}
+
+.blue {
+  background-color: #3bc7ed;
+}
+
+.purple {
+  background-color: #ac519d;
+}
+
+.orange {
+  background-color: #ed7931;
+}
+
+.darkblue {
+  background-color:#0b24fb;
 }

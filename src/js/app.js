@@ -16,7 +16,7 @@ $(() => {
   const $scoreboard = $('.scoreboard');
 
   let shapes= [[4,5,14,15],[4,5,14,24], [4,5,15,25],[4,14,15,25], [4,5,6,7],[5,14,15,24],[5,14,15,16]];
-  const colors = ['red','blue','yellow','green'];
+  const colors = ['red','blue','yellow','green','purple','orange','darkblue'];
 
   const rowsArray = [
     [0,1,2,3,4,5,6,7,8,9],
@@ -50,7 +50,7 @@ $(() => {
 
   function gamePlay() {
     checkRow();
-    setTimeout(checkLoss, 6000);
+    setTimeout(checkLoss, 4000);
     color = colors[Math.floor(Math.random()*colors.length)];
     shape = shapes[Math.floor(Math.random()*shapes.length)];
     cellChange();
@@ -58,17 +58,18 @@ $(() => {
   }
 
   function move() {
-    horizontalMove();
+    cellChange();
     checkForEnd();
+    horizontalMove();
     shape = shape.map((i) => i += 10);
   }
 
   function cellChange() {
     cells.forEach((cell, i) => {
       if (shape.includes(i)) {
-        $(cell).addClass(`color ${color}`).css({backgroundColor: color});
+        $(cell).addClass(`color ${color}`);
       } else {
-        $(cell).removeClass(`color ${color}`).removeAttr('style');
+        if (!$(cell).hasClass('fixed')) $(cell).removeClass(`color ${color}`);
       }
     });
   }
@@ -107,6 +108,7 @@ $(() => {
     let canMoveShape = true;
     let length = shape.length;
     let newIndex = 0;
+    const rotatedShape = [];
     while(length-- && canMoveShape) {
       const diff = Math.abs(shape[2] - shape[length]);
       switch (diff) {
@@ -114,52 +116,54 @@ $(() => {
           newIndex = shape[length] < shape[2] ? shape[2] - 10 : shape[2] + 10;
           if (shape[2] % 10 <= 1) canMoveShape = newIndex % 10 !== 9 && newIndex % 10 !== 8;
           else if (shape[2] % 10 >= 8) canMoveShape =  newIndex % 10 !== 0 && newIndex % 10 !== 1;
-          if(canMoveShape) shape[length] = newIndex;
+          rotatedShape.push(newIndex);
           break;
         case 10:
           newIndex = (shape[length] < shape[2]) ? shape[2] + 1 : shape[2] - 1;
           if (shape[2] % 10 <= 1) canMoveShape = newIndex % 10 !== 9 && newIndex % 10 !== 8;
           else if (shape[2] % 10 >= 8) canMoveShape =  newIndex % 10 !== 0 && newIndex % 10 !== 1;
-          if(canMoveShape) shape[length] = newIndex;
+          rotatedShape.push(newIndex);
           break;
         case 9:
           newIndex = (shape[length] < shape[2]) ? shape[2] + 11 : shape[2] - 11;
           if (shape[2] % 10 <= 1) canMoveShape = newIndex % 10 !== 9 && newIndex % 10 !== 8;
           else if (shape[2] % 10 >= 8) canMoveShape =  newIndex % 10 !== 0 && newIndex % 10 !== 1;
-          if(canMoveShape) shape[length] = newIndex;
+          rotatedShape.push(newIndex);
           break;
         case 11:
           newIndex = (shape[length] < shape[2]) ? shape[2] - 9 : shape[2] + 9;
           if (shape[2] % 10 <= 1) canMoveShape = newIndex % 10 !== 9 && newIndex % 10 !== 8;
           else if (shape[2] % 10 >= 8) canMoveShape =  newIndex % 10 !== 0 && newIndex % 10 !== 1;
-          if(canMoveShape) shape[length] = newIndex;
+          rotatedShape.push(newIndex);
           break;
         case 20:
           newIndex =  (shape[length] < shape[2]) ? shape[2] + 2 : shape[2] - 2;
           if (shape[2] % 10 <= 1) canMoveShape = newIndex % 10 !== 9 && newIndex % 10 !== 8;
           else if (shape[2] % 10 >= 8) canMoveShape =  newIndex % 10 !== 0 && newIndex % 10 !== 1;
-          if(canMoveShape) shape[length] = newIndex;
+          rotatedShape.push(newIndex);
           break;
         case 2:
           newIndex =  (shape[length] < shape[2]) ? shape[2] - 20 : shape[2] + 20;
           if (shape[2] % 10 <= 1) canMoveShape = newIndex % 10 !== 9 && newIndex % 10 !== 8;
           else if (shape[2] % 10 >= 8) canMoveShape =  newIndex % 10 !== 0 && newIndex % 10 !== 1;
-          if(canMoveShape) shape[length] = newIndex;
+          rotatedShape.push(newIndex);
           break;
+        default:
+          rotatedShape.push(shape[length]);
       }
     }
+    if(canMoveShape) shape = rotatedShape.reverse();
   }
 
   function checkForEnd() {
-    if (shape.some((sq) => sq > lastCell || shape.some((sq) => $(cells[sq]).hasClass('fixed')))) {
+    if (shape.some((i) => i + 10 > lastCell || shape.some((i) => $(cells[i + 10]).hasClass('fixed')))) {
       clearInterval(timerId);
-      cells.forEach(cell => {
-        if ($(cell).hasClass('color')) $(cell).addClass('fixed');
+      shape.forEach((i) => {
+        console.log(i);
+        $(cells[i]).addClass(`fixed ${color}`);
       });
       shapes= [[4,5,14,15],[4,5,14,24], [4,5,15,25],[4,14,15,25], [4,5,6,7],[5,14,15,24],[5,14,15,16]];
-      gamePlay();
-    } else {
-      cellChange();
+      // gamePlay();
     }
   }
 
@@ -177,13 +181,13 @@ $(() => {
         cells = [].slice.call($('li'));
         score += 100;
         $scoreboard.text(`Your score is: ${score}`);
-
       }
     }
   }
 
   //Event Listeners
   document.addEventListener('keydown', keyDown, false);
-  $startBtn.on('click', gamePlay);
+  $startBtn.one('click', gamePlay);
+
   // $pauseBtn.on('click', pause);
 });
