@@ -123,28 +123,22 @@ $(() => {
       console.log(diff);
       switch (diff) {
         case (1):
-          if (shape[i] < shape[2]) shape[i] = shape[2] - 10;
-          else shape[i] = shape[2] + 10;
+          shape[i] = (shape[i] < shape[2]) ? shape[2] - 10 : shape[i] = shape[2] + 10;
           break;
         case (10):
-          if (shape[i] < shape[2]) shape[i] = shape[2] + 1;
-          else shape[i] = shape[2] - 1;
+          shape[i] = (shape[i] < shape[2]) ? shape[2] + 1 : shape[i] = shape[2] - 1;
           break;
         case (9):
-          if (shape[i] < shape[2]) shape[i] = shape[2] + 11;
-          else shape[i] = shape[2] - 11;
+          shape[i] = (shape[i] < shape[2]) ? shape[2] + 11 : shape[2] - 11;
           break;
         case (11):
-          if (shape[i] < shape[2]) shape[i] = shape[2] - 9;
-          else shape[i] = shape[2] + 9;
+          shape[i] = (shape[i] < shape[2]) ? shape[2] - 9 : shape[2] + 9;
           break;
         case (20):
-          if (shape[i] < shape[2]) shape[i] = shape[2] + 2;
-          else shape[i] = shape[2] - 2;
+          shape[i] =  (shape[i] < shape[2]) ? shape[2] + 2 : shape[2] - 2;
           break;
         case (2):
-          if (shape[i] < shape[2]) shape[i] = shape[2] - 20;
-          else shape[i] = shape[2] + 20;
+          shape[i] =  (shape[i] < shape[2]) ? shape[2] - 20 : shape[2] + 20;
           break;
         default:
           shape[i] = shape[i];
