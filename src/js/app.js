@@ -7,18 +7,16 @@ $(() => {
   const $h2 = $('h2');
   const lastCell = cells.length-1;
   const $startBtn = $('.start');
-  const $pauseBtn = $('.pause');
+  // const $pauseBtn = $('.pause');
+  // let playing = true;
   let timerId = null;
   let shape = null;
   let key = '';
   let color = '';
   let score = 0;
   const $scoreboard = $('.scoreboard');
-  let playing = true;
-  let rotate = 0;
 
-
-  let shapes= [[4,5,14,15,'O'],[4,5,14,24,'J'], [4,5,15,25,'L'],[4,14,15,25,'S'], [4,5,6,7,'I'],[5,14,15,24, 'Z'],[5,14,15,16,'T']];
+  let shapes= [[4,5,14,15],[4,5,14,24], [4,5,15,25],[4,14,15,25], [4,5,6,7],[5,14,15,24],[5,14,15,16]];
   const colors = ['red','blue','yellow','green'];
 
   const rowsArray = [
@@ -55,6 +53,7 @@ $(() => {
     checkRow();
     setTimeout(checkLoss, 2000);
     color = colors[Math.floor(Math.random()*colors.length)];
+    // rotate = 0;
     shape = shapes[Math.floor(Math.random()*shapes.length)];
     cellChange();
     timerId = setInterval(move, 500);
@@ -83,10 +82,7 @@ $(() => {
     var keyCode = e.keyCode;
     if(keyCode === 39) key = 'ArrowRight';
     else if (keyCode === 37) key = 'ArrowLeft';
-    else if (keyCode === 38) {
-      key = 'ArrowUp';
-
-    }
+    else if (keyCode === 38) key = 'ArrowUp';
   }
 
   function horizontalMove() {
@@ -115,69 +111,44 @@ $(() => {
         }
         break;
       case 'ArrowUp':
-        if (rotate < 4) rotate++;
-        else rotate = 1;
-        if (shape.includes('J')) rotateJ();
-        if (shape.includes('L')) rotateL();
-        if (shape.includes('S')) rotateS();
-        if (shape.includes('I')) rotateI();
-        if (shape.includes('Z')) rotateZ();
+        rotateShape();
+        break;
     }
     key = '';
   }
 
-  function rotateJ() {
-    const shape0 = [shape[2] + 1,shape[2] + 10, shape[2] - 1,shape[2] - 10];
-    const shape1 = [shape[2] + 11, shape[2] + 9, shape[2] - 11,shape[2] - 9];
-    const shape3 = [shape[2] - 1,shape[2] - 10, shape[2] + 1,shape[2] + 10];
-    shape[0] = shape0[rotate-1];
-    shape[1] = shape1[rotate-1];
-    shape[3] = shape3[rotate-1];
-  }
-
-  function rotateL() {
-    const shape0 = [shape[2] - 9,shape[2] + 11, shape[2] + 9,shape[2] - 11];
-    const shape1 = [shape[2] + 1, shape[2] + 10, shape[2] - 1,shape[2] - 10];
-    const shape3 = [shape[2] - 1,shape[2] - 10, shape[2] + 1,shape[2] + 10];
-    shape[0] = shape0[rotate-1];
-    shape[1] = shape1[rotate-1];
-    shape[3] = shape3[rotate-1];
-  }
-
-  function rotateS() {
-    const shape0 = [shape[2] - 9,shape[2] + 11, shape[2] + 9,shape[2] - 11];
-    const shape1 = [shape[2] - 10, shape[2] + 1, shape[2] + 10,shape[2] - 1];
-    const shape3 = [shape[2] - 1,shape[2] - 10, shape[2] + 1,shape[2] + 10];
-    shape[0] = shape0[rotate-1];
-    shape[1] = shape1[rotate-1];
-    shape[3] = shape3[rotate-1];
-  }
-
-  function rotateI() {
-    const shape0 = [shape[2] - 20,shape[2] + 2, shape[2] + 20,shape[2] - 2];
-    const shape1 = [shape[2] - 10, shape[2] + 1, shape[2] + 10,shape[2] - 1];
-    const shape3 = [shape[2] + 10,shape[2] - 1, shape[2] - 10, shape[2] + 1];
-    shape[0] = shape0[rotate-1];
-    shape[1] = shape1[rotate-1];
-    shape[3] = shape3[rotate-1];
-  }
-
-  function rotateZ() {
-    const shape0 = [shape[2] + 1,shape[2] + 10, shape[2] - 1,shape[2] - 10];
-    const shape1 = [shape[2] - 10, shape[2] + 1, shape[2] + 10,shape[2] - 1];
-    const shape3 = [shape[2] - 11,shape[2] - 9, shape[2] + 11,shape[2] + 9];
-    shape[0] = shape0[rotate-1];
-    shape[1] = shape1[rotate-1];
-    shape[3] = shape3[rotate-1];
-  }
-
-  function pause() {
-    if (playing) {
-      playing = false;
-      clearInterval(timerId);
-    } else {
-      setInterval(move, 500);
-      playing = true;
+  function rotateShape() {
+    for (let i = 0; i < shape.length; i++) {
+      const diff = Math.abs(shape[2] - shape[i]);
+      console.log(diff);
+      switch (diff) {
+        case (1):
+          if (shape[i] < shape[2]) shape[i] = shape[2] - 10;
+          else shape[i] = shape[2] + 10;
+          break;
+        case (10):
+          if (shape[i] < shape[2]) shape[i] = shape[2] + 1;
+          else shape[i] = shape[2] - 1;
+          break;
+        case (9):
+          if (shape[i] < shape[2]) shape[i] = shape[2] + 11;
+          else shape[i] = shape[2] - 11;
+          break;
+        case (11):
+          if (shape[i] < shape[2]) shape[i] = shape[2] - 9;
+          else shape[i] = shape[2] + 9;
+          break;
+        case (20):
+          if (shape[i] < shape[2]) shape[i] = shape[2] + 2;
+          else shape[i] = shape[2] - 2;
+          break;
+        case (2):
+          if (shape[i] < shape[2]) shape[i] = shape[2] - 20;
+          else shape[i] = shape[2] + 20;
+          break;
+        default:
+          shape[i] = shape[i];
+      }
     }
   }
 
@@ -188,7 +159,7 @@ $(() => {
       cells.forEach(cell => {
         if ($(cell).hasClass('color')) $(cell).addClass('fixed');
       });
-      shapes = [[4,5,14,15,'O'],[4,5,14,24,'J'], [4,5,15,25,'L'],[4,14,15,25,'S'], [4,5,6,7,'I'],[5,14,15,24, 'Z'],[5,14,15,16,'T']];
+      shapes= [[4,5,14,15],[4,5,14,24], [4,5,15,25],[4,14,15,25], [4,5,6,7],[5,14,15,24],[5,14,15,16]];
       gamePlay();
     } else {
       cellChange();
@@ -217,5 +188,5 @@ $(() => {
   //Event Listeners
   document.addEventListener('keydown', keyDown, false);
   $startBtn.on('click', gamePlay);
-  $pauseBtn.on('click', pause);
+  // $pauseBtn.on('click', pause);
 });
