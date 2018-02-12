@@ -61,10 +61,7 @@ $(() => {
 
   function move() {
     horizontalMove();
-    shape[0] += 10;
-    shape[1] = shape[1] + 10;
-    shape[2] = shape[2] + 10;
-    shape[3] = shape[3] + 10;
+    shape = shape.map((i) => i += 10);
     checkForEnd();
   }
 
@@ -92,23 +89,13 @@ $(() => {
         shape.forEach((el) => {
           if (el % 10 === 10-1) exit = true;
         });
-        if (exit === false) {
-          shape[0] += 1;
-          shape[1] += 1;
-          shape[2] += 1;
-          shape[3] += 1;
-        }
+        if (exit === false) shape = shape.map((i) => i += 1);
         break;
       case 'ArrowLeft':
         shape.forEach((el) => {
           if (el % 10 === 0) exit = true;
         });
-        if (exit === false) {
-          shape[0] -= 1;
-          shape[1] -= 1;
-          shape[2] -= 1;
-          shape[3] -= 1;
-        }
+        if (exit === false) shape = shape.map((i) => i -= 1);
         break;
       case 'ArrowUp':
         rotateShape();
@@ -120,7 +107,6 @@ $(() => {
   function rotateShape() {
     for (let i = 0; i < shape.length; i++) {
       const diff = Math.abs(shape[2] - shape[i]);
-      console.log(diff);
       switch (diff) {
         case (1):
           shape[i] = (shape[i] < shape[2]) ? shape[2] - 10 : shape[i] = shape[2] + 10;
