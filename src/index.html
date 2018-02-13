@@ -15,47 +15,110 @@
   <body>
     <!-- <h1>WDI Project 1: JavaScript Game</h1> -->
     <div class="container">
-      <div class="info">
-        <img src="images/tetris-4.png" alt="tetris logo">
-        <h2>Go!</h2>
-        <div class="scoreboard">Your score is:</div>
-        <button class="start">Start Game!</button>
-        <div class="instructions">
-          Instructions:
-          <ol>
-            <li>Press <i class="fas fa-arrow-left"></i> to move left</li>
-            <li>Press <i class="fas fa-arrow-right"></i> to move right</li>
-            <li>Press <i class="fas fa-arrow-up"></i> to rotate</li>
-          </ol>
+        <div class="start-screen">
+          <img src="images/tetris-4.png" alt="tetris logo">
+          <h2>Go!</h2>
+          <button class="start">Start Game!</button>
         </div>
-        <!-- <button class="musicBtn"><i class="fas fa-volume-up"></i><audio src="sounds/tetris-gameboy-02.mp3" class="music" type="mp3" autoplay loopx></audio></button> -->
-      </div>
-      <div class="gameboard">
-        <ul>
+        <div class="end-screen hidden">
+          <h2></h2>
+        </div>
+      <div class="main-screen hidden">
+        <div class="game-info">
+          <div class="next-shape">
+            <ul>
+              <li class="invisible"></li>
+              <li class="invisible"></li>
+              <li class="invisible"></li>
+              <li></li>
+              <li></li>
+              <li></li>
+              <li></li>
+              <li></li>
+              <li class="invisible"></li>
+              <li class="invisible"></li>
 
+              <li class="invisible"></li>
+              <li class="invisible"></li>
+              <li class="invisible"></li>
+              <li></li>
+              <li></li>
+              <li></li>
+              <li></li>
+              <li></li>
+              <li class="invisible"></li>
+              <li class="invisible"></li>
+
+              <li class="invisible"></li>
+              <li class="invisible"></li>
+              <li class="invisible"></li>
+              <li></li>
+              <li></li>
+              <li></li>
+              <li></li>
+              <li></li>
+              <li class="invisible"></li>
+              <li class="invisible"></li>
+
+              <li class="invisible"></li>
+              <li class="invisible"></li>
+              <li class="invisible"></li>
+              <li></li>
+              <li></li>
+              <li></li>
+              <li></li>
+              <li></li>
+              <li class="invisible"></li>
+              <li class="invisible"></li>
+
+              <li class="invisible"></li>
+              <li class="invisible"></li>
+              <li class="invisible"></li>
+              <li class="invisible"></li>
+              <li></li>
+              <li></li>
+              <li></li>
+              <li></li>
+              <li class="invisible"></li>
+              <li class="invisible"></li>
+            </ul>
+          </div>
+          <div class="scoreboard"></div>
+          <p>Level:<span class="current-level">1<span><p>
+          <div class="instructions">
+            Instructions:
+            <ol>
+              <li>Press <i class="fas fa-arrow-left"></i> to move left</li>
+              <li>Press <i class="fas fa-arrow-right"></i> to move right</li>
+              <li>Press <i class="fas fa-arrow-up"></i> to rotate</li>
+            </ol>
+          </div>
+          <!-- <button class="musicBtn"><i class="fas fa-volume-up"></i><audio src="sounds/tetris-gameboy-02.mp3" class="music" type="mp3" autoplay loopx></audio></button> -->
+        </div>
+        <ul class="gamegrid">
           <!-- row 1 -->
-          <li class="hidden"></li>
-          <li class="hidden"></li>
-          <li class="hidden"></li>
-          <li class="hidden"></li>
-          <li class="hidden"></li>
-          <li class="hidden"></li>
-          <li class="hidden"></li>
-          <li class="hidden"></li>
-          <li class="hidden"></li>
-          <li class="hidden"></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
 
           <!-- row 2 -->
-          <li class="hidden"></li>
-          <li class="hidden"></li>
-          <li class="hidden"></li>
-          <li class="hidden"></li>
-          <li class="hidden"></li>
-          <li class="hidden"></li>
-          <li class="hidden"></li>
-          <li class="hidden"></li>
-          <li class="hidden"></li>
-          <li class="hidden"></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
 
           <!-- row 3 -->
           <li></li>

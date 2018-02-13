@@ -3,24 +3,34 @@ $(() => {
 
   //Variables
   //Gameplay Variables
-  let cells = [].slice.call($('ul li'));
-  let shapes= [[4,5,14,15],[4,5,14,24], [4,5,15,25],[4,14,15,25], [4,5,6,7],[5,14,15,24],[5,14,15,16]];
+  let cells = [].slice.call($('.gamegrid li'));
+  console.log(cells);
+  let shapes = [];
   let shape = null;
+  const terminos = [];
   const colors = ['yellow','blue','orange','green','cyan','red','purple'];
   let color = '';
   const $ul = $('ul');
   const lastCell = cells.length-1;
   const $startBtn = $('.start');
   let timerId = null;
-  let score = 0;
-  const $scoreboard = $('.scoreboard');
-  const $h2 = $('h2');
 
+  //Score and Level Variables
+  let score = 0;
+  let lines = 0;
+  const $scoreboard = $('.scoreboard');
+  let level = 1;
+  const $currentLevel = $('.current-level');
+  const speed = [1000,750,500,250,100];
+  const nextShape = [].slice.call($('.next-shape li'));
 
   //Audio & Animation Variables
   const $musicBtn = $('.musicBtn');
   const music = $('.music')[0];
   let musicOn = true;
+  const $h2 = $('h2');
+  const $startScreen = $('.start-screen');
+  const $mainScreen = $('.main-screen');
 
   //Shape Rotation Variables
   let rotatedShape = [];
@@ -56,7 +66,21 @@ $(() => {
 
   //Functions
   //Gameplay functions
-  //TODO: CheckLoss function Broken
+  function gamePlay() {
+    $startScreen.addClass('hidden');
+    $mainScreen.removeClass('hidden');
+    checkLevel();
+    $startBtn.remove();
+    checkLoss();
+    checkRow();
+    getShapes();
+    // color =  colors[Math.floor(Math.random()*colors.length)];
+    // color = colors[shapes.indexOf(terminos[0])];
+
+    cellChange();
+    timerId = setInterval(move, speed[level]);
+  }
+
   function checkLoss() {
     for (let i = 20; i < 30; i++) {
       if ($(cells[i]).hasClass('fixed')) {
@@ -66,13 +90,34 @@ $(() => {
     }
   }
 
-  function gamePlay() {
-    checkLoss();
-    checkRow();
-    shape = shapes[Math.floor(Math.random()*shapes.length)];
-    color = colors[shapes.indexOf(shape)];
-    cellChange();
-    timerId = setInterval(move, 1000);
+  function checkLevel() {
+    switch (Math.floor(score / 1000)) {
+      case 2:
+        level = 2;
+        break;
+      case 4:
+        level = 3;
+        break;
+      case 6:
+        level = 4;
+        break;
+      case 8:
+        console.log('You win!');
+        break;
+    }
+    $currentLevel.text(level);
+  }
+
+  //TODO: COLORS DON'T WORK, CURRENTLY RANDOMIZED
+  function getShapes() {
+    shapes= [[4,5,14,15],[4,5,14,24], [4,5,15,25],[4,14,15,25], [4,5,6,7],[5,14,15,24],[5,14,15,16]];
+    color =  colors[Math.floor(Math.random()*colors.length)];
+    terminos.push( shapes[Math.floor(Math.random()*shapes.length)],shapes[Math.floor(Math.random()*shapes.length)]);
+    shape = terminos[0];
+    nextShape.forEach((cell,i) => {
+      if (terminos[1].includes(i)) $(cell[i+10]).addClass('red');
+      else $(cell).removeClass('red');
+    });
   }
 
   function move() {
@@ -83,6 +128,7 @@ $(() => {
   }
 
   function cellChange() {
+    console.log(color);
     cells.forEach((cell, i) => {
       if (shape.includes(i)) {
         $(cell).addClass(`color ${color}`);
@@ -110,7 +156,8 @@ $(() => {
     cellChange();
   }
 
-  //TODO: Can rotate into other shapes and off the top and bottom edges
+  //TODO: Can rotate off the top and bottom edges
+  //TODO: J rotates weird
   function rotateShape() {
     let canRotate = true;
     let length = shape.length;
@@ -165,20 +212,14 @@ $(() => {
       if (modulos.includes(8)) shape = shape.map((i) => i += 2);
       else if (modulos.includes(9)) shape = shape.map((i) => i += 1);
       rotateShape();
-    }
-
-    if (shape[2] % 10 === 1 && modulos.includes(9)) {
+    } else if (shape[2] % 10 === 1 && modulos.includes(9)) {
       shape = shape.map((i) => i += 1);
       rotateShape();
-    }
-
-    if (shape[2] % 10 === 9) {
+    } else if (shape[2] % 10 === 9) {
       if (modulos.includes(1)) shape = shape.map((i) => i -= 2);
       else if (modulos.includes(0)) shape = shape.map((i) => i -= 1);
       rotateShape();
-    }
-
-    if (shape[2] % 10 === 8 && modulos.includes(0)) {
+    } else if (shape[2] % 10 === 8 && modulos.includes(0)) {
       shape = shape.map((i) => i -= 1);
       rotateShape();
     }
@@ -193,27 +234,61 @@ $(() => {
       shape.forEach((i) => {
         $(cells[i]).addClass(`fixed ${color}`);
       });
-      shapes = [[4,5,14,15],[4,5,14,24], [4,5,15,25],[4,14,15,25], [4,5,6,7],[5,14,15,24],[5,14,15,16]];
+      shapes= [[4,5,14,15],[4,5,14,24], [4,5,15,25],[4,14,15,25], [4,5,6,7],[5,14,15,24],[5,14,15,16]];
+      terminos.splice(0,1);
+      // shapeIndex += 1;
       gamePlay();
     }
   }
 
   function checkRow() {
+    lines = 0;
     for (let i = 0; i < rowsArray.length; i++) {
       let clear = true;
-      rowsArray[i].forEach((el) => {
-        if (!$(cells[el]).hasClass('fixed')) {
-          clear = false;
-        }
-      });
+      clear = rowsArray[i].every((el) => $(cells[el]).hasClass('fixed'));
       if (clear)  {
-        rowsArray[i].forEach((el) => $(cells[el]).removeAttr('class').prependTo($ul));
+        lines += 1;
+        rowsArray[i].forEach((el) => {
+          $(cells[el]).removeAttr('class').prependTo($ul);
+        });
         cells = [].slice.call($('ul li'));
-        score += 100;
-        $scoreboard.text(`Your score is: ${score}`);
       }
     }
+    updateScore();
+    updateGameboard();
   }
+
+
+  function updateScore() {
+    switch (lines) {
+      case 1:
+        score += 100*level;
+        break;
+      case 2:
+        score += 300*level;
+        break;
+      case 3:
+        score += 500*level;
+        break;
+      case 4:
+        score += 800*level;
+        break;
+    }
+    $scoreboard.text(`Score: ${score}`);
+  }
+
+  function updateGameboard() {
+    cells.forEach((cell) => $(cell).removeClass('hidden'));
+    for (let i = 0; i < 20; i++) {
+      $(cells[i]).addClass('hidden');
+    }
+  }
+
+  // function displayNext() {
+  //   nextShape.forEach((cell) => {
+  //     if (terminos[1].includes(cell)) $(cell).addClass('color red');
+  //   });
+  // }
 
   //Audio Functions
   function playMusic() {
@@ -232,5 +307,6 @@ $(() => {
   $(document).on('keydown', keyDown);
   $startBtn.one('click', gamePlay);
   $musicBtn.on('click', playMusic);
+
 
 });

@@ -3,48 +3,80 @@
 //   background-color: linear-gradient(to bottom, #1a82f7, #2F2727);
 //
 // }
-
-
 html, body {
   width: 100%;
   height: 100%;
   margin: 0;
   font-family:'Press Start 2P', cursive;
-  background: linear-gradient(to bottom, blue, white);
-}
-
-h1 {
-  text-align:center;
+  background: white;
 }
 
 .container {
   padding:10px;
-  display:flex;
-  justify-content: space-around;
-  max-width:960px;
+  width:100%;
+  height:100%;
   margin: 0 auto;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url("/images/gameboy-full.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.start-screen {
+  max-width:400px;
+  display:flex;
+  flex-direction:column;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.main-screen {
+  max-width:380px;
+  display:flex;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.game-info {
+  padding-left:5px;
+  text-align:center;
 }
 
 .instructions {
   text-align:left;
   margin: 0 auto;
+  font-size: 10px;
 }
+
 
 ul {
   display: flex;
   flex-wrap: wrap;
-  width: 290px;
+  width: 160px;
   margin: 0;
   padding: 0;
   list-style: none;
   margin: auto;
     li {
       border: 1px solid;
-      height: 25px;
-      width: 25px;
+      height: 12px;
+      width: 12px;
       font-size: 30px;
       line-height: 30px;
       background-color:transparent;
+    }
+  }
+
+  .next-shape {
+     ul {
+       width:200px;
+       li {
+         height: 17px;
+         width: 17px;
+       }
     }
   }
 
@@ -74,6 +106,10 @@ button {
 
 .hidden {
   display:none;
+}
+
+.invisible {
+  visibility:hidden;
 }
 
 .color {
