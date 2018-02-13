@@ -72,6 +72,10 @@ button {
   width:50px;
 }
 
+.hidden {
+  display:none;
+}
+
 .color {
    box-shadow: inset -14px -14px 15px -17px rgba(0,0,0,0.75);
 }
@@ -94,8 +98,12 @@ button {
   background-color: #f6d331;
 }
 
-.blue {
+.cyan {
   background-color: #3bc7ed;
+}
+
+.blue {
+  background-color: dodgerblue;
 }
 
 .purple {
