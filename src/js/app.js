@@ -4,7 +4,8 @@ $(() => {
   //Variables
   //Gameplay Variables
   let cells = [].slice.call($('ul li'));
-  let shapes= [[4,5,14,15],[4,5,14,24], [4,5,15,25],[4,14,15,25], [4,5,6,7],[5,14,15,24],[5,14,15,16]];
+  // let shapes= [[4,5,14,15],[4,5,14,24], [4,5,15,25],[4,14,15,25], [4,5,6,7],[5,14,15,24],[5,14,15,16]];
+  let shapes= [[4,5,14,24]];
   let shape = null;
   const colors = ['red','blue','yellow','green','purple','orange'];
   let color = '';
@@ -23,9 +24,9 @@ $(() => {
   let musicOn = true;
 
   //Shape Rotation Variables
-  let canMoveShape = true;
   let rotatedShape = [];
   let newIndex  = 0;
+  let modulos = [];
 
   const rowsArray = [
     [0,1,2,3,4,5,6,7,8,9],
@@ -106,53 +107,75 @@ $(() => {
     }
     cellChange();
   }
-
-
-
-  function rotateIndex() {
-    if (shape[2] % 10 <= 1) canMoveShape = newIndex % 10 !== 9 && newIndex % 10 !== 8;
-    else if (shape[2] % 10 >= 8) canMoveShape =  newIndex % 10 !== 0 && newIndex % 10 !== 1;
-    rotatedShape.push(newIndex);
-  }
-
-  //shape[2] is the center of rotation for each shape
+  
   function rotateShape() {
-    canMoveShape = true;
     rotatedShape = [];
-    let length = shape.length;
-    while(length-- && canMoveShape) {
-      const diff = Math.abs(shape[2] - shape[length]);
+    modulos = [];
+    let newIndex = 0;
+    shape.forEach((i) => {
+      const diff = Math.abs(shape[2] - i);
+      console.log(diff);
       switch (diff) {
         case 1:
-          newIndex = shape[length] < shape[2] ? shape[2] - 10 : shape[2] + 10;
-          rotateIndex();
+          newIndex = i < shape[2] ? shape[2] - 10 : shape[2] + 10;
+          modulos.push(newIndex % 10);
+          rotatedShape.push(newIndex);
           break;
         case 10:
-          newIndex = (shape[length] < shape[2]) ? shape[2] + 1 : shape[2] - 1;
-          rotateIndex();
+          newIndex = i < shape[2] ? shape[2] + 1 : shape[2] - 1;
+          modulos.push(newIndex % 10);
+          rotatedShape.push(newIndex);
           break;
         case 9:
-          newIndex = (shape[length] < shape[2]) ? shape[2] + 11 : shape[2] - 11;
-          rotateIndex();
+          newIndex = i < shape[2] ? shape[2] + 11 : shape[2] - 11;
+          modulos.push(newIndex % 10);
+          rotatedShape.push(newIndex);
           break;
         case 11:
-          newIndex = (shape[length] < shape[2]) ? shape[2] - 9 : shape[2] + 9;
-          rotateIndex();
+          newIndex = i < shape[2] ? shape[2] - 9 : shape[2] + 9;
+          modulos.push(newIndex % 10);
+          rotatedShape.push(newIndex);
           break;
         case 20:
-          newIndex =  (shape[length] < shape[2]) ? shape[2] + 2 : shape[2] - 2;
-          rotateIndex();
+          newIndex = i < shape[2] ? shape[2] + 2 : shape[2] - 2;
+          modulos.push(newIndex % 10);
+          rotatedShape.push(newIndex);
           break;
         case 2:
-          newIndex =  (shape[length] < shape[2]) ? shape[2] - 20 : shape[2] + 20;
-          rotateIndex();
+          newIndex = i < shape[2] ? shape[2] - 20 : shape[2] + 20;
+          modulos.push(newIndex % 10);
+          rotatedShape.push(newIndex);
           break;
         default:
-          rotatedShape.push(shape[length]);
+          rotatedShape.push(i);
       }
+    });
+
+    if (shape[2] % 10 === 0) {
+      if (modulos.includes(8)) shape = shape.map((i) => i += 2);
+      else if (modulos.includes(9)) shape = shape.map((i) => i += 1);
+      rotateShape();
     }
-    if(canMoveShape) shape = rotatedShape.reverse();
+
+    if (shape[2] % 10 === 1 && modulos.includes(9)) {
+      shape = shape.map((i) => i += 1);
+      rotateShape();
+    }
+
+    if (shape[2] % 10 === 9) {
+      if (modulos.includes(1)) shape = shape.map((i) => i -= 2);
+      else if (modulos.includes(0)) shape = shape.map((i) => i -= 1);
+      rotateShape();
+    }
+
+    if (shape[2] % 10 === 8 && modulos.includes(0)) {
+      shape = shape.map((i) => i -= 1);
+      rotateShape();
+    }
+
+    shape = rotatedShape;
   }
+
 
   function checkForEnd() {
     if (shape.some((i) => i + 10 > lastCell || shape.some((i) => $(cells[i + 10]).hasClass('fixed')))) {
