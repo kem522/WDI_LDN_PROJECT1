@@ -2,18 +2,19 @@ $(() => {
   console.log('JS Loaded');
 
   //Variables
-  let cells = [].slice.call($('li'));
+  let cells = [].slice.call($('ul li'));
   const $ul = $('ul');
   const $h2 = $('h2');
   const lastCell = cells.length-1;
   const $startBtn = $('.start');
-  // const $pauseBtn = $('.pause');
   let timerId = null;
   let shape = null;
-  let key = '';
   let color = '';
   let score = 0;
   const $scoreboard = $('.scoreboard');
+  const $musicBtn = $('.musicBtn');
+  const music = $('music')[0];
+  let musicOn = true;
 
   let shapes= [[4,5,14,15],[4,5,14,24], [4,5,15,25],[4,14,15,25], [4,5,6,7],[5,14,15,24],[5,14,15,16]];
   const colors = ['red','blue','yellow','green','purple','orange','darkblue'];
@@ -34,7 +35,13 @@ $(() => {
     [120,121,122,123,124,125,126,127,128,129],
     [130,131,132,133,134,135,136,137,138,139],
     [140,141,142,143,144,145,146,147,148,149],
-    [150,151,152,153,154,155,156,157,158,159]
+    [150,151,152,153,154,155,156,157,158,159],
+    [160,161,162,163,164,165,166,167,168,169],
+    [170,171,172,173,174,175,176,177,178,179],
+    [180,181,182,183,184,185,186,187,188,189],
+    [190,191,192,193,194,195,196,197,198,199],
+    [200,201,202,203,204,205,206,207,208,209],
+    [210,211,212,213,214,215,216,217,218,219]
   ];
 
 
@@ -50,7 +57,7 @@ $(() => {
 
   function gamePlay() {
     checkRow();
-    setTimeout(checkLoss, 4000);
+    setTimeout(checkLoss, 4000); // TODO: remove the setTimout here if possible
     color = colors[Math.floor(Math.random()*colors.length)];
     shape = shapes[Math.floor(Math.random()*shapes.length)];
     cellChange();
@@ -60,7 +67,6 @@ $(() => {
   function move() {
     cellChange();
     checkForEnd();
-    horizontalMove();
     shape = shape.map((i) => i += 10);
   }
 
@@ -68,39 +74,26 @@ $(() => {
     cells.forEach((cell, i) => {
       if (shape.includes(i)) {
         $(cell).addClass(`color ${color}`);
-      } else {
-        if (!$(cell).hasClass('fixed')) $(cell).removeClass(`color ${color}`);
+      } else if (!$(cell).hasClass('fixed')) {
+        $(cell).removeClass(`color ${color}`);
       }
     });
   }
 
   function keyDown(e) {
-    var keyCode = e.keyCode;
-    if(keyCode === 39) key = 'ArrowRight';
-    else if (keyCode === 37) key = 'ArrowLeft';
-    else if (keyCode === 38) key = 'ArrowUp';
-  }
-
-  function horizontalMove() {
-    let exit = false;
-    switch (key) {
-      case 'ArrowRight':
-        shape.forEach((el) => {
-          if (el % 10 === 10-1) exit = true;
-        });
-        if (exit === false) shape = shape.map((i) => i += 1);
+    e.preventDefault();
+    switch (e.keyCode) {
+      case 39:
+        if(!shape.some(el => el % 10 === 10-1)) shape = shape.map((i) => i += 1);
         break;
-      case 'ArrowLeft':
-        shape.forEach((el) => {
-          if (el % 10 === 0) exit = true;
-        });
-        if (exit === false) shape = shape.map((i) => i -= 1);
+      case 37:
+        if(!shape.some(el => el % 10 === 0)) shape = shape.map((i) => i -= 1);
         break;
-      case 'ArrowUp':
+      case 38:
         rotateShape();
         break;
     }
-    key = '';
+    cellChange();
   }
 
 
@@ -163,7 +156,7 @@ $(() => {
         $(cells[i]).addClass(`fixed ${color}`);
       });
       shapes= [[4,5,14,15],[4,5,14,24], [4,5,15,25],[4,14,15,25], [4,5,6,7],[5,14,15,24],[5,14,15,16]];
-      // gamePlay();
+      gamePlay();
     }
   }
 
@@ -176,18 +169,28 @@ $(() => {
         }
       });
       if (clear)  {
-        rowsArray[i].forEach((el) => $(cells[el]).remove());
-        $ul.prepend('<li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li>');
-        cells = [].slice.call($('li'));
+        rowsArray[i].forEach((el) => $(cells[el]).removeAttr('class').prependTo($ul));
+        cells = [].slice.call($('ul li'));
         score += 100;
         $scoreboard.text(`Your score is: ${score}`);
       }
     }
   }
 
-  //Event Listeners
-  document.addEventListener('keydown', keyDown, false);
-  $startBtn.one('click', gamePlay);
+  function playMusic() {
+    if (musicOn) {
+      music.pause();
+      musicOn = false;
+      $musicBtn.html('<i class="fas fa-volume-off"></i>');
+    } else {
+      music.play();
+      musicOn = true;
+    }
+  }
 
-  // $pauseBtn.on('click', pause);
+  //Event Listeners
+  $(document).on('keydown', keyDown);
+  $startBtn.one('click', gamePlay);
+  $musicBtn.on('click', playMusic);
+
 });

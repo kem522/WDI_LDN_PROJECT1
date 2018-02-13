@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>WDI Project 1: JavaScript Game</title>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
     <script
   src="https://code.jquery.com/jquery-3.3.1.min.js"
   integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
@@ -12,14 +13,22 @@
     <link rel="stylesheet" href="/css/style.css">
   </head>
   <body>
-    <h1>WDI Project 1: JavaScript Game</h1>
+    <!-- <h1>WDI Project 1: JavaScript Game</h1> -->
     <div class="container">
       <div class="info">
         <img src="images/tetris-4.png" alt="tetris logo">
         <h2>Go!</h2>
         <div class="scoreboard">Your score is:</div>
         <button class="start">Start Game!</button>
-        <button class="pause">Pause Game</button>
+        <div class="instructions">
+          Instructions:
+          <ol>
+            <li>Press <i class="fas fa-arrow-left"></i> to move left</li>
+            <li>Press <i class="fas fa-arrow-right"></i> to move right</li>
+            <li>Press <i class="fas fa-arrow-up"></i> to rotate</li>
+          </ol>
+        </div>
+        <button class="musicBtn"><i class="fas fa-volume-up"></i><audio src="sounds/tetris-gameboy-02.mp3" class="music" type="mp3" autoplay></audio></button>
       </div>
       <div class="gameboard">
         <ul>
