@@ -2,22 +2,30 @@ $(() => {
   console.log('JS Loaded');
 
   //Variables
+  //Gameplay Variables
   let cells = [].slice.call($('ul li'));
+  let shapes= [[4,5,14,15],[4,5,14,24], [4,5,15,25],[4,14,15,25], [4,5,6,7],[5,14,15,24],[5,14,15,16]];
+  let shape = null;
+  const colors = ['red','blue','yellow','green','purple','orange'];
+  let color = '';
   const $ul = $('ul');
-  const $h2 = $('h2');
   const lastCell = cells.length-1;
   const $startBtn = $('.start');
   let timerId = null;
-  let shape = null;
-  let color = '';
   let score = 0;
   const $scoreboard = $('.scoreboard');
+  const $h2 = $('h2');
+
+
+  //Audio & Animation Variables
   const $musicBtn = $('.musicBtn');
-  const music = $('music')[0];
+  const music = $('.music')[0];
   let musicOn = true;
 
-  let shapes= [[4,5,14,15],[4,5,14,24], [4,5,15,25],[4,14,15,25], [4,5,6,7],[5,14,15,24],[5,14,15,16]];
-  const colors = ['red','blue','yellow','green','purple','orange','darkblue'];
+  //Shape Rotation Variables
+  let canMoveShape = true;
+  let rotatedShape = [];
+  let newIndex  = 0;
 
   const rowsArray = [
     [0,1,2,3,4,5,6,7,8,9],
@@ -46,9 +54,10 @@ $(() => {
 
 
   //Functions
+  //Gameplay functions
   function checkLoss() {
     for (let i = 0; i < 10; i++) {
-      if ($(cells[i]).hasClass('color')) {
+      if ($(cells[i]).hasClass('fixed')) {
         clearInterval(timerId);
         $h2.text('You Lose!');
       }
@@ -57,7 +66,7 @@ $(() => {
 
   function gamePlay() {
     checkRow();
-    setTimeout(checkLoss, 4000); // TODO: remove the setTimout here if possible
+    checkLoss();
     color = colors[Math.floor(Math.random()*colors.length)];
     shape = shapes[Math.floor(Math.random()*shapes.length)];
     cellChange();
@@ -84,62 +93,59 @@ $(() => {
     e.preventDefault();
     switch (e.keyCode) {
       case 39:
-        if(!shape.some(el => el % 10 === 10-1)) shape = shape.map((i) => i += 1);
+        if(!shape.some(i => i % 10 === 9 || $(cells[i + 1]).hasClass('fixed'))) shape = shape.map((i) => i += 1);
         break;
       case 37:
-        if(!shape.some(el => el % 10 === 0)) shape = shape.map((i) => i -= 1);
+        if(!shape.some(i => i % 10 === 0 || $(cells[i - 1]).hasClass('fixed'))) shape = shape.map((i) => i -= 1);
         break;
       case 38:
         rotateShape();
         break;
+      case 40:
+        if(!shape.some(i => i + 10 > lastCell || $(cells[i + 10]).hasClass('fixed'))) shape = shape.map((i) => i += 10);
     }
     cellChange();
   }
 
 
+
+  function rotateIndex() {
+    if (shape[2] % 10 <= 1) canMoveShape = newIndex % 10 !== 9 && newIndex % 10 !== 8;
+    else if (shape[2] % 10 >= 8) canMoveShape =  newIndex % 10 !== 0 && newIndex % 10 !== 1;
+    rotatedShape.push(newIndex);
+  }
+
+  //shape[2] is the center of rotation for each shape
   function rotateShape() {
-    let canMoveShape = true;
+    canMoveShape = true;
+    rotatedShape = [];
     let length = shape.length;
-    let newIndex = 0;
-    const rotatedShape = [];
     while(length-- && canMoveShape) {
       const diff = Math.abs(shape[2] - shape[length]);
       switch (diff) {
         case 1:
           newIndex = shape[length] < shape[2] ? shape[2] - 10 : shape[2] + 10;
-          if (shape[2] % 10 <= 1) canMoveShape = newIndex % 10 !== 9 && newIndex % 10 !== 8;
-          else if (shape[2] % 10 >= 8) canMoveShape =  newIndex % 10 !== 0 && newIndex % 10 !== 1;
-          rotatedShape.push(newIndex);
+          rotateIndex();
           break;
         case 10:
           newIndex = (shape[length] < shape[2]) ? shape[2] + 1 : shape[2] - 1;
-          if (shape[2] % 10 <= 1) canMoveShape = newIndex % 10 !== 9 && newIndex % 10 !== 8;
-          else if (shape[2] % 10 >= 8) canMoveShape =  newIndex % 10 !== 0 && newIndex % 10 !== 1;
-          rotatedShape.push(newIndex);
+          rotateIndex();
           break;
         case 9:
           newIndex = (shape[length] < shape[2]) ? shape[2] + 11 : shape[2] - 11;
-          if (shape[2] % 10 <= 1) canMoveShape = newIndex % 10 !== 9 && newIndex % 10 !== 8;
-          else if (shape[2] % 10 >= 8) canMoveShape =  newIndex % 10 !== 0 && newIndex % 10 !== 1;
-          rotatedShape.push(newIndex);
+          rotateIndex();
           break;
         case 11:
           newIndex = (shape[length] < shape[2]) ? shape[2] - 9 : shape[2] + 9;
-          if (shape[2] % 10 <= 1) canMoveShape = newIndex % 10 !== 9 && newIndex % 10 !== 8;
-          else if (shape[2] % 10 >= 8) canMoveShape =  newIndex % 10 !== 0 && newIndex % 10 !== 1;
-          rotatedShape.push(newIndex);
+          rotateIndex();
           break;
         case 20:
           newIndex =  (shape[length] < shape[2]) ? shape[2] + 2 : shape[2] - 2;
-          if (shape[2] % 10 <= 1) canMoveShape = newIndex % 10 !== 9 && newIndex % 10 !== 8;
-          else if (shape[2] % 10 >= 8) canMoveShape =  newIndex % 10 !== 0 && newIndex % 10 !== 1;
-          rotatedShape.push(newIndex);
+          rotateIndex();
           break;
         case 2:
           newIndex =  (shape[length] < shape[2]) ? shape[2] - 20 : shape[2] + 20;
-          if (shape[2] % 10 <= 1) canMoveShape = newIndex % 10 !== 9 && newIndex % 10 !== 8;
-          else if (shape[2] % 10 >= 8) canMoveShape =  newIndex % 10 !== 0 && newIndex % 10 !== 1;
-          rotatedShape.push(newIndex);
+          rotateIndex();
           break;
         default:
           rotatedShape.push(shape[length]);
@@ -152,10 +158,9 @@ $(() => {
     if (shape.some((i) => i + 10 > lastCell || shape.some((i) => $(cells[i + 10]).hasClass('fixed')))) {
       clearInterval(timerId);
       shape.forEach((i) => {
-        console.log(i);
         $(cells[i]).addClass(`fixed ${color}`);
       });
-      shapes= [[4,5,14,15],[4,5,14,24], [4,5,15,25],[4,14,15,25], [4,5,6,7],[5,14,15,24],[5,14,15,16]];
+      shapes = [[4,5,14,15],[4,5,14,24], [4,5,15,25],[4,14,15,25], [4,5,6,7],[5,14,15,24],[5,14,15,16]];
       gamePlay();
     }
   }
@@ -177,6 +182,7 @@ $(() => {
     }
   }
 
+  //Audio Functions
   function playMusic() {
     if (musicOn) {
       music.pause();
@@ -185,6 +191,7 @@ $(() => {
     } else {
       music.play();
       musicOn = true;
+      $musicBtn.html('<i class="fas fa-volume-up"></i>');
     }
   }
 
