@@ -22,7 +22,7 @@ html, body {
   display:flex;
   align-items: flex-start;
   justify-content: center;
-  background-image: url("/images/gameboy-full.png");
+  background-image: url("/images/gameboy-crop.png");
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -38,13 +38,11 @@ html, body {
 
 
 .main-screen {
-  // margin: 0 auto;
   flex-direction:row;
   padding:5px;
 }
 
 .game-info {
-  // padding-left:5px;
   text-align:center;
   max-width: 180px;
 }
@@ -83,15 +81,6 @@ ul {
     }
   }
 
-// .next-shape {
-//    ul {
-//      width:200px;
-//      li {
-//        height: 17px;
-//        width: 17px;
-//      }
-//   }
-// }
 
 img {
   max-width:75%;
@@ -113,17 +102,10 @@ button {
   width:50px;
 }
 
-.keypad {
-  max-width:100px;
-}
 
 .hidden {
   display:none;
 }
-
-// .invisible {
-//   visibility:hidden;
-// }
 
 .color {
    box-shadow: inset -14px -14px 15px -17px rgba(0,0,0,0.75);
@@ -159,4 +141,68 @@ button {
 
 .orange {
   background-color: #ed7931;
+}
+
+@media only screen and (max-width:600px) {
+  .container {
+    margin:0;
+    width:calc(100vw);
+    height:100vh;
+    flex-direction:column;
+    align-items: center;
+    justify-content: flex-start;
+    background-image: url("/images/gameboy.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  .start-screen, .end-screen, .main-screen {
+    margin-top:80px;
+    width:280px;
+  }
+
+  ul {
+    width: 80px;
+    margin: 0;
+      li {
+        height: 6px;
+        width: 6px;
+      }
+    }
+
+    .main-screen {
+      flex-direction:row;
+      justify-content: center;
+    }
+
+    .game-info {
+      max-width: 100px;
+      margin-right:30px;
+      p {
+        font-size:10px;
+      }
+    }
+
+    .instructions {
+      text-align:left;
+      font-size: 8px;
+      word-spacing: 4px;
+      line-height: 10px;
+    }
+
+    .keypad {
+      display:block;
+      position:absolute;
+      bottom:150px;
+      left:18px;
+      ul {
+        display:flex;
+        width:110px;
+        li {
+          border:transparent;
+          height: 30px;
+          width: 30px;
+        }
+      }
+    }
 }

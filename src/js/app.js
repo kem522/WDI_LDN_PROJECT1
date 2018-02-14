@@ -7,13 +7,14 @@ $(() => {
   let cells = [].slice.call($('.gamegrid li'));
   let shapes = [[4,5,14,15,'O'],[4,5,14,24], [4,5,15,25],[4,14,15,25], [4,5,6,7],[5,14,15,24],[5,14,15,16]];
   let shape = null;
-  // const terminos = [];
   const colors = ['yellow','blue','orange','green','cyan','red','purple'];
   let color = '';
-  const $ul = $('ul');
+  const $ul = $('.gamegrid ul');
   const lastCell = cells.length-1;
   const $startBtn = $('.start');
   let timerId = null;
+  let key = 0;
+  const $keypad = [].slice.call($('.keypad li'));
   const $startScreen = $('.start-screen');
   const $mainScreen = $('.main-screen');
   const $endScreen = $('.end-screen');
@@ -42,6 +43,8 @@ $(() => {
   const music = $('.music')[0];
   let musicOn = true;
   const $h2 = $('h2');
+  // let key = 0;
+
 
 
   const rowsArray = [
@@ -142,9 +145,8 @@ $(() => {
     });
   }
 
-  function keyDown(e) {
-    e.preventDefault();
-    switch (e.keyCode) {
+  function keyDown() {
+    switch (key) {
       case 39:
         if(!shape.some(i => i % 10 === 9 || $(cells[i + 1]).hasClass('fixed'))) shape = shape.map((i) => i += 1);
         break;
@@ -317,6 +319,9 @@ $(() => {
     document.cookie = `highscore=${score}`;
   }
 
+
+
+
   //Audio Functions
   function playMusic() {
     if (musicOn) {
@@ -331,7 +336,19 @@ $(() => {
   }
 
   //Event Listeners
-  $(document).on('keydown', keyDown);
+  $(document).on('keydown', (e) => {
+    e.preventDefault();
+    key = e.keyCode;
+    keyDown();
+  });
+
+  $keypad.forEach((button) => {
+    $(button).on('touchstart', function (e) {
+      key = e.target.value;
+      console.log(key);
+      keyDown();
+    });
+  });
   $startBtn.one('click', gamePlay);
   $musicBtn.on('click', playMusic);
 
