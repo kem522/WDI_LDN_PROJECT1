@@ -32,6 +32,9 @@ $(() => {
   const $currentLevel = $('.current-level');
   const speed = [1000,750,500,250,100];
   let newHighScore = 0;
+  let currentHighScore = 0;
+  const $oldScore = $('.old-score');
+  const $newScore = $('.new-score');
   // const nextShape = [].slice.call($('.next-shape li'));
 
   //Audio & Animation Variables
@@ -274,14 +277,27 @@ $(() => {
     }
   }
 
+  //TODO: event of no cookie
   function endGame() {
     $endScreen.removeClass('hidden');
     $mainScreen.addClass('hidden');
-    const currentHighScore = getCookie();
-    if (score > currentHighScore) setCookie();
-    // $h2.text(`Your final score is ${score}`);
-    // if (level / 1000 === 8 )
-    $h2.html(`Congratulations, you win! <br><br> Your final score is ${score}`);
+    currentHighScore = getCookie();
+
+    if (score > currentHighScore) {
+      $h2.html('You Beat Your Highscore!');
+      $oldScore.text(`Previous High Score: ${currentHighScore}`);
+      $newScore.text(`Your New High Score: ${score}`);
+      setCookie();
+    } else if (score < currentHighScore) {
+      $h2.html('Better Luck Next Time');
+      $oldScore.text(`Current High Score: ${currentHighScore}`);
+      $newScore.text(`Your Score: ${score}`);
+    } else {
+      $newScore.text(`Your Score: ${score}`);
+      setCookie();
+    }
+
+    if (level / 1000 === 8 ) $h2.html(`Congratulations, you beat the game! <br><br> Your final score is ${score}`);
   }
   // function displayNext() {
   //   nextShape.forEach((cell) => {
