@@ -27,7 +27,7 @@ html, body {
   background-size: cover;
 }
 
-.start-screen {
+.start-screen, .end-screen, .main-screen {
   max-width:360px;
   display:flex;
   flex-direction:column;
@@ -37,10 +37,8 @@ html, body {
 
 
 .main-screen {
-  max-width:360px;
-  display:flex;
-  justify-content: center;
   margin: 0 auto;
+  flex-direction:row;
 }
 
 .game-info {

@@ -4,7 +4,7 @@ $(() => {
   //Variables
   //Gameplay Variables
   let cells = [].slice.call($('.gamegrid li'));
-  let shapes = [[4,5,14,15],[4,5,14,24], [4,5,15,25],[4,14,15,25], [4,5,6,7],[5,14,15,24],[5,14,15,16]];
+  let shapes = [[4,5,14,15,'O'],[4,5,14,24], [4,5,15,25],[4,14,15,25], [4,5,6,7],[5,14,15,24],[5,14,15,16]];
   let shape = null;
   // const terminos = [];
   const colors = ['yellow','blue','orange','green','cyan','red','purple'];
@@ -13,6 +13,9 @@ $(() => {
   const lastCell = cells.length-1;
   const $startBtn = $('.start');
   let timerId = null;
+  const $startScreen = $('.start-screen');
+  const $mainScreen = $('.main-screen');
+  const $endScreen = $('.end-screen');
 
   //Score and Level Variables
   let score = 0;
@@ -28,8 +31,6 @@ $(() => {
   const music = $('.music')[0];
   let musicOn = true;
   const $h2 = $('h2');
-  const $startScreen = $('.start-screen');
-  const $mainScreen = $('.main-screen');
 
   //Shape Rotation Variables
   let rotatedShape = [];
@@ -68,8 +69,8 @@ $(() => {
   function gamePlay() {
     $startScreen.addClass('hidden');
     $mainScreen.removeClass('hidden');
-    checkLevel();
     $startBtn.remove();
+    checkLevel();
     checkLoss();
     checkRow();
     getShapes();
@@ -81,7 +82,7 @@ $(() => {
     for (let i = 20; i < 30; i++) {
       if ($(cells[i]).hasClass('fixed')) {
         clearInterval(timerId);
-        $h2.text('You Lose!');
+        endGame();
       }
     }
   }
@@ -143,7 +144,7 @@ $(() => {
         if(!shape.some(i => i % 10 === 0 || $(cells[i - 1]).hasClass('fixed'))) shape = shape.map((i) => i -= 1);
         break;
       case 38:
-        rotateShape();
+        if (!(shape.join('').includes('O') || shape.join('').includes('NaN'))) rotateShape();
         break;
       case 40:
         if(!shape.some(i => i + 10 > lastCell || $(cells[i + 10]).hasClass('fixed'))) shape = shape.map((i) => i += 10);
@@ -152,7 +153,7 @@ $(() => {
   }
 
   //TODO: Can rotate off the top and bottom edges
-  //TODO: J rotates weird
+  //TODO: Square spins
   function rotateShape() {
     let canRotate = true;
     let length = shape.length;
@@ -164,38 +165,38 @@ $(() => {
       switch (diff) {
         case 1:
           newIndex = shape[length] < shape[2] ? shape[2] - 10 : shape[2] + 10;
-          canRotate = (!$(cells[newIndex]).hasClass('fixed'));
+          canRotate = (!$(cells[newIndex]).hasClass('fixed') || $(cells[newIndex]) < 20);
           modulos.push(newIndex % 10);
           rotatedShape.push(newIndex);
           break;
         case 10:
           newIndex = shape[length] < shape[2] ? shape[2] + 1 : shape[2] - 1;
-          canRotate = (!$(cells[newIndex]).hasClass('fixed'));
+          canRotate = (!$(cells[newIndex]).hasClass('fixed') || $(cells[newIndex]) < 20);
           modulos.push(newIndex % 10);
           rotatedShape.push(newIndex);
           break;
         case 9:
           newIndex = shape[length] < shape[2] ? shape[2] + 11 : shape[2] - 11;
-          canRotate = (!$(cells[newIndex]).hasClass('fixed'));
+          canRotate = (!$(cells[newIndex]).hasClass('fixed') || $(cells[newIndex]) < 20);
           modulos.push(newIndex % 10);
           rotatedShape.push(newIndex);
           break;
         case 11:
           newIndex = shape[length] < shape[2] ? shape[2] - 9 : shape[2] + 9;
-          canRotate = (!$(cells[newIndex]).hasClass('fixed'));
+          canRotate = (!$(cells[newIndex]).hasClass('fixed') || $(cells[newIndex]) < 20);
           modulos.push(newIndex % 10);
           rotatedShape.push(newIndex);
           break;
         case 20:
           newIndex = shape[length] < shape[2] ? shape[2] + 2 : shape[2] - 2;
-          canRotate = (!$(cells[newIndex]).hasClass('fixed'));
+          canRotate = (!$(cells[newIndex]).hasClass('fixed') || $(cells[newIndex]) < 20);
           modulos.push(newIndex % 10);
           rotatedShape.push(newIndex);
           break;
         case 2:
           newIndex = shape[length] < shape[2] ? shape[2] - 20 : shape[2] + 20;
           console.log(newIndex);
-          canRotate = (!$(cells[newIndex]).hasClass('fixed'));
+          canRotate = (!$(cells[newIndex]).hasClass('fixed') || $(cells[newIndex]) < 20);
           modulos.push(newIndex % 10);
           rotatedShape.push(newIndex);
           break;
@@ -229,7 +230,7 @@ $(() => {
       shape.forEach((i) => {
         $(cells[i]).addClass(`fixed ${color}`);
       });
-      shapes = [[4,5,14,15],[4,5,14,24], [4,5,15,25],[4,14,15,25], [4,5,6,7],[5,14,15,24],[5,14,15,16]];
+      shapes = [[4,5,14,15,'O'],[4,5,14,24], [4,5,15,25],[4,14,15,25], [4,5,6,7],[5,14,15,24],[5,14,15,16]];
       // terminos.splice(0,1);
       // // shapeIndex += 1;
       gamePlay();
@@ -279,6 +280,10 @@ $(() => {
     }
   }
 
+  function endGame() {
+    $endScreen.removeClass('hidden');
+    $mainScreen.addClass('hidden');
+  }
   // function displayNext() {
   //   nextShape.forEach((cell) => {
   //     if (terminos[1].includes(cell)) $(cell).addClass('color red');
