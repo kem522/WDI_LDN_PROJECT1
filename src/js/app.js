@@ -4,10 +4,9 @@ $(() => {
   //Variables
   //Gameplay Variables
   let cells = [].slice.call($('.gamegrid li'));
-  console.log(cells);
-  let shapes = [];
+  let shapes = [[4,5,14,15],[4,5,14,24], [4,5,15,25],[4,14,15,25], [4,5,6,7],[5,14,15,24],[5,14,15,16]];
   let shape = null;
-  const terminos = [];
+  // const terminos = [];
   const colors = ['yellow','blue','orange','green','cyan','red','purple'];
   let color = '';
   const $ul = $('ul');
@@ -22,7 +21,7 @@ $(() => {
   let level = 1;
   const $currentLevel = $('.current-level');
   const speed = [1000,750,500,250,100];
-  const nextShape = [].slice.call($('.next-shape li'));
+  // const nextShape = [].slice.call($('.next-shape li'));
 
   //Audio & Animation Variables
   const $musicBtn = $('.musicBtn');
@@ -74,9 +73,6 @@ $(() => {
     checkLoss();
     checkRow();
     getShapes();
-    // color =  colors[Math.floor(Math.random()*colors.length)];
-    // color = colors[shapes.indexOf(terminos[0])];
-
     cellChange();
     timerId = setInterval(move, speed[level]);
   }
@@ -110,14 +106,14 @@ $(() => {
 
   //TODO: COLORS DON'T WORK, CURRENTLY RANDOMIZED
   function getShapes() {
-    shapes= [[4,5,14,15],[4,5,14,24], [4,5,15,25],[4,14,15,25], [4,5,6,7],[5,14,15,24],[5,14,15,16]];
+    shape = shapes[Math.floor(Math.random()*shapes.length)];
     color =  colors[Math.floor(Math.random()*colors.length)];
-    terminos.push( shapes[Math.floor(Math.random()*shapes.length)],shapes[Math.floor(Math.random()*shapes.length)]);
-    shape = terminos[0];
-    nextShape.forEach((cell,i) => {
-      if (terminos[1].includes(i)) $(cell[i+10]).addClass('red');
-      else $(cell).removeClass('red');
-    });
+    // terminos.push( shapes[Math.floor(Math.random()*shapes.length)],shapes[Math.floor(Math.random()*shapes.length)]);
+    // shape = terminos[0];
+    // nextShape.forEach((cell,i) => {
+    //   if (terminos[1].includes(i)) $(cell[i+10]).addClass('red');
+    //   else $(cell).removeClass('red');
+    // });
   }
 
   function move() {
@@ -128,7 +124,6 @@ $(() => {
   }
 
   function cellChange() {
-    console.log(color);
     cells.forEach((cell, i) => {
       if (shape.includes(i)) {
         $(cell).addClass(`color ${color}`);
@@ -199,6 +194,7 @@ $(() => {
           break;
         case 2:
           newIndex = shape[length] < shape[2] ? shape[2] - 20 : shape[2] + 20;
+          console.log(newIndex);
           canRotate = (!$(cells[newIndex]).hasClass('fixed'));
           modulos.push(newIndex % 10);
           rotatedShape.push(newIndex);
@@ -222,9 +218,8 @@ $(() => {
     } else if (shape[2] % 10 === 8 && modulos.includes(0)) {
       shape = shape.map((i) => i -= 1);
       rotateShape();
-    }
+    } else if (canRotate) shape = rotatedShape.reverse();
 
-    if (canRotate) shape = rotatedShape.reverse();
   }
 
 
@@ -234,9 +229,9 @@ $(() => {
       shape.forEach((i) => {
         $(cells[i]).addClass(`fixed ${color}`);
       });
-      shapes= [[4,5,14,15],[4,5,14,24], [4,5,15,25],[4,14,15,25], [4,5,6,7],[5,14,15,24],[5,14,15,16]];
-      terminos.splice(0,1);
-      // shapeIndex += 1;
+      shapes = [[4,5,14,15],[4,5,14,24], [4,5,15,25],[4,14,15,25], [4,5,6,7],[5,14,15,24],[5,14,15,16]];
+      // terminos.splice(0,1);
+      // // shapeIndex += 1;
       gamePlay();
     }
   }
