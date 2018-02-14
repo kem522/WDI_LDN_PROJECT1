@@ -14,7 +14,6 @@ $(() => {
   const $startBtn = $('.start');
   let timerId = null;
   let key = 0;
-  const $keypad = [].slice.call($('.keypad li'));
   const $startScreen = $('.start-screen');
   const $mainScreen = $('.main-screen');
   const $endScreen = $('.end-screen');
@@ -301,12 +300,8 @@ $(() => {
 
     if (level / 1000 === 8 ) $h2.html(`Congratulations, you beat the game! <br><br> Your final score is ${score}`);
   }
-  // function displayNext() {
-  //   nextShape.forEach((cell) => {
-  //     if (terminos[1].includes(cell)) $(cell).addClass('color red');
-  //   });
-  // }
-  // //
+
+  //Cookie Functions
   function getCookie(){
     const allCookies = document.cookie.split(';');
     allCookies.forEach((c) => {
@@ -318,8 +313,6 @@ $(() => {
   function setCookie() {
     document.cookie = `highscore=${score}`;
   }
-
-
 
 
   //Audio Functions
@@ -342,15 +335,18 @@ $(() => {
     keyDown();
   });
 
-  $keypad.forEach((button) => {
-    $(button).on('touchstart', function (e) {
-      key = e.target.value;
-      console.log(key);
-      keyDown();
-    });
+  //TODO: diagonal corners will do both horizontal and vertical actions
+  $(document).on('touchstart',(e) => {
+    const X = e.touches[0].pageX;
+    const Y = e.touches[0].pageY;
+    if (Y < 120) key = 38;
+    else if (Y > 420) key = 40;
+    else if (X < 80 && Y > 120 && Y < 420) key = 37;
+    else if (X > 230 && Y > 120 && Y < 420) key = 39;
+    keyDown();
   });
+
   $startBtn.one('click', gamePlay);
   $musicBtn.on('click', playMusic);
-
 
 });
