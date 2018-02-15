@@ -6,6 +6,32 @@ const colors = ['yellow','blue','orange','green','cyan','red','purple'];
 let color = '';
 let timerId = null;
 let key = 0;
+const rowsArray = [
+  // [0,1,2,3,4,5,6,7,8,9],
+  // [10,11,12,13,14,15,16,17,18,19],
+  [20,21,22,23,24,25,26,27,28,29],
+  [30,31,32,33,34,35,36,37,38,39],
+  [40,41,42,43,44,45,46,47,48,49],
+  [50,51,52,53,54,55,56,57,58,59],
+  [60,61,62,63,64,65,66,67,68,69],
+  [70,71,72,73,74,75,76,77,78,79],
+  [80,81,82,83,84,85,86,87,88,89],
+  [90,91,92,93,94,95,96,97,98,99],
+  [100,101,102,103,104,105,106,107,108,109],
+  [110,111,112,113,114,115,116,117,118,119],
+  [120,121,122,123,124,125,126,127,128,129],
+  [130,131,132,133,134,135,136,137,138,139],
+  [140,141,142,143,144,145,146,147,148,149],
+  [150,151,152,153,154,155,156,157,158,159],
+  [160,161,162,163,164,165,166,167,168,169],
+  [170,171,172,173,174,175,176,177,178,179],
+  [180,181,182,183,184,185,186,187,188,189],
+  [190,191,192,193,194,195,196,197,198,199],
+  [200,201,202,203,204,205,206,207,208,209],
+  [210,211,212,213,214,215,216,217,218,219],
+  [220,221,222,223,224,225,226,227,228,229],
+  [230,231,232,233,234,235,236,237,238,239]
+];
 
 //Score and Level Variables
 let score = 0;
@@ -42,34 +68,6 @@ $(() => {
   const $h2 = $('h2');
   const gameSounds = $('.game-sounds')[0];
 
-  const rowsArray = [
-    // [0,1,2,3,4,5,6,7,8,9],
-    // [10,11,12,13,14,15,16,17,18,19],
-    [20,21,22,23,24,25,26,27,28,29],
-    [30,31,32,33,34,35,36,37,38,39],
-    [40,41,42,43,44,45,46,47,48,49],
-    [50,51,52,53,54,55,56,57,58,59],
-    [60,61,62,63,64,65,66,67,68,69],
-    [70,71,72,73,74,75,76,77,78,79],
-    [80,81,82,83,84,85,86,87,88,89],
-    [90,91,92,93,94,95,96,97,98,99],
-    [100,101,102,103,104,105,106,107,108,109],
-    [110,111,112,113,114,115,116,117,118,119],
-    [120,121,122,123,124,125,126,127,128,129],
-    [130,131,132,133,134,135,136,137,138,139],
-    [140,141,142,143,144,145,146,147,148,149],
-    [150,151,152,153,154,155,156,157,158,159],
-    [160,161,162,163,164,165,166,167,168,169],
-    [170,171,172,173,174,175,176,177,178,179],
-    [180,181,182,183,184,185,186,187,188,189],
-    [190,191,192,193,194,195,196,197,198,199],
-    [200,201,202,203,204,205,206,207,208,209],
-    [210,211,212,213,214,215,216,217,218,219],
-    [220,221,222,223,224,225,226,227,228,229],
-    [230,231,232,233,234,235,236,237,238,239]
-  ];
-
-
   //Functions
   //Gameplay functions
   function gamePlay() {
@@ -88,7 +86,6 @@ $(() => {
     checkForEnd();
     checkLoss();
     checkLevel();
-    beatGame();
     shape = shape.map((i) => i += 10);
   }
 
@@ -113,7 +110,7 @@ $(() => {
         level = 4;
         break;
       case 8:
-        endGame();
+        beatGame();
         break;
     }
     $currentLevel.text(level);
@@ -143,7 +140,6 @@ $(() => {
         if(!shape.some(i => i % 10 === 0 || $(cells[i - 1]).hasClass('fixed'))) shape = shape.map((i) => i -= 1);
         break;
       case 38:
-        console.log(gameSounds);
         gameSounds.src = '/sounds/sfx_sounds_button6.wav';
         gameSounds.play();
         if (!(shape.join('').includes('O') || shape.join('').includes('NaN'))) rotateShape();
@@ -172,50 +168,43 @@ $(() => {
     keyDown();
   }
 
-  function rotateIndex(newIndex, canRotate, modulos, rotatedShape) {
-    canRotate = !($(cells[newIndex]).hasClass('fixed') || $(cells[newIndex]) > lastCell);
+  function updateRotationArrays(newIndex, modulos, rotatedShape) {
     modulos.push(newIndex % 10);
     rotatedShape.push(newIndex);
   }
 
-  //TODO: Can rotate off the top and bottom edges
+  //TODO: Blocks should bounce down when cannot rotate at ceiling 
   function rotateShape() {
-    const rotatedShape = [];
-    let modulos = [];
-    const canRotate = true;
+    let canRotate = true;
     let newIndex = 0;
     let length = shape.length;
+    const rotatedShape = [];
+    let modulos = [];
     while (canRotate && length--) {
       const diff = Math.abs(shape[2] - shape[length]);
-      switch (diff) {
-        case 1:
-          newIndex = shape[length] < shape[2] ? shape[2] - 10 : shape[2] + 10;
-          rotateIndex(newIndex, canRotate, modulos, rotatedShape);
-          break;
-        case 10:
-          newIndex = shape[length] < shape[2] ? shape[2] + 1 : shape[2] - 1;
-          rotateIndex(newIndex, canRotate, modulos, rotatedShape);
-          break;
-        case 9:
+      switch (true) {
+        case diff === 9:
           newIndex = shape[length] < shape[2] ? shape[2] + 11 : shape[2] - 11;
-          rotateIndex(newIndex, canRotate, modulos, rotatedShape);
+          updateRotationArrays(newIndex, modulos, rotatedShape);
           break;
-        case 11:
+        case diff === 11:
           newIndex = shape[length] < shape[2] ? shape[2] - 9 : shape[2] + 9;
-          rotateIndex(newIndex, canRotate, modulos, rotatedShape);
+          updateRotationArrays(newIndex, modulos, rotatedShape);
           break;
-        case 20:
-          newIndex = shape[length] < shape[2] ? shape[2] + 2 : shape[2] - 2;
-          rotateIndex(newIndex, canRotate, modulos, rotatedShape);
+        case diff < 10:
+          newIndex = shape[length] < shape[2] ? shape[2] - diff*10 : shape[2] + diff*10;
+          updateRotationArrays(newIndex, modulos, rotatedShape);
           break;
-        case 2:
-          newIndex = shape[length] < shape[2] ? shape[2] - 20 : shape[2] + 20;
-          rotateIndex(newIndex, canRotate, modulos, rotatedShape);
+        case diff >= 10:
+          newIndex = shape[length] < shape[2] ? shape[2] + diff/10 : shape[2] - diff/10;
+          updateRotationArrays(newIndex, modulos, rotatedShape);
           break;
         default:
           rotatedShape.push(shape[length]);
       }
     }
+
+    canRotate = rotatedShape.every((i) => !($(cells[i]).hasClass('fixed') || i > lastCell || i < 20));
 
     modulos = modulos.sort();
     if (shape[2] % 10 <= 1 && (modulos.includes(8) || modulos.includes(9))) {
@@ -307,15 +296,14 @@ $(() => {
   }
 
   function beatGame() {
-    if (level / 1000 === 8) {
-      gameSounds.src = '/sounds/Player Wins.mp3';
-      gameSounds.play();
-      $endScreen.removeClass('hidden');
-      $mainScreen.addClass('hidden');
-      currentHighScore = getCookie();
-      $h2.html(`Congratulations, you beat the game! <br><br> Your final score is ${score}`);
-      $endScreen.css({backgroundImage: 'url(/images/fireworks.gif)', color: 'white'});
-    }
+    clearInterval(timerId);
+    music.src = '/sounds/Player Wins.mp3';
+    music.play();
+    $endScreen.removeClass('hidden');
+    $mainScreen.addClass('hidden');
+    currentHighScore = getCookie();
+    $h2.html(`Congratulations, you beat the game! <br><br> Your final score is ${score}`);
+    $endScreen.css({backgroundImage: 'url(/images/fireworks.gif)', color: 'white'});
   }
 
   //Cookie Functions
