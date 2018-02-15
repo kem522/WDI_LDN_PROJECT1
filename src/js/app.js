@@ -1,50 +1,46 @@
+//Variables
+//Gameplay Variables
+let shapes = [[4,5,14,15,'O'],[4,5,14,24], [4,5,15,25],[4,14,15,25], [4,5,6,7],[5,14,15,24],[5,14,15,16]];
+let shape = null;
+const colors = ['yellow','blue','orange','green','cyan','red','purple'];
+let color = '';
+let timerId = null;
+let key = 0;
+
+//Score and Level Variables
+let score = 0;
+let level = 1;
+let newHighScore = 0;
+let currentHighScore = 0;
+
+//Audio & Animation Variables
+let musicOn = true;
+
 $(() => {
   console.log('JS Loaded');
-  console.log(document.cookie);
 
-  //Variables
+  //DOM Dependent Variables
   //Gameplay Variables
   let cells = [].slice.call($('.gamegrid li'));
-  let shapes = [[4,5,14,15,'O'],[4,5,14,24], [4,5,15,25],[4,14,15,25], [4,5,6,7],[5,14,15,24],[5,14,15,16]];
-  let shape = null;
-  const colors = ['yellow','blue','orange','green','cyan','red','purple'];
-  let color = '';
-  const $ul = $('.gamegrid ul');
   const lastCell = cells.length-1;
+  const $ul = $('ul');
   const $startBtn = $('.start');
-  let timerId = null;
-  let key = 0;
   const $startScreen = $('.start-screen');
   const $mainScreen = $('.main-screen');
   const $endScreen = $('.end-screen');
 
-  //Shape Rotation Variables
-  let rotatedShape = [];
-  let modulos = [];
-  let canRotate = true;
-  let newIndex = 0;
-
   //Score and Level Variables
-  let score = 0;
-  let lines = 0;
   const $scoreboard = $('.scoreboard');
-  let level = 1;
   const $currentLevel = $('.current-level');
   const speed = [1000,750,500,250,100];
-  let newHighScore = 0;
-  let currentHighScore = 0;
   const $oldScore = $('.old-score');
   const $newScore = $('.new-score');
-  // const nextShape = [].slice.call($('.next-shape li'));
 
   //Audio & Animation Variables
   const $musicBtn = $('.musicBtn');
   const music = $('.music')[0];
-  let musicOn = true;
   const $h2 = $('h2');
-  // let key = 0;
-
-
+  const gameSounds = $('.game-sounds')[0];
 
   const rowsArray = [
     // [0,1,2,3,4,5,6,7,8,9],
@@ -80,7 +76,6 @@ $(() => {
     $startScreen.addClass('hidden');
     $mainScreen.removeClass('hidden');
     $startBtn.remove();
-    checkLevel();
     checkLoss();
     checkRow();
     getShapes();
@@ -92,6 +87,8 @@ $(() => {
     cellChange();
     checkForEnd();
     checkLoss();
+    checkLevel();
+    beatGame();
     shape = shape.map((i) => i += 10);
   }
 
@@ -122,16 +119,9 @@ $(() => {
     $currentLevel.text(level);
   }
 
-  //TODO: COLORS DON'T WORK WITH NEXT SHAPE
   function getShapes() {
     shape = shapes[Math.floor(Math.random()*shapes.length)];
-    color =  colors[shapes.indexOf(shape)];
-    // terminos.push( shapes[Math.floor(Math.random()*shapes.length)],shapes[Math.floor(Math.random()*shapes.length)]);
-    // shape = terminos[0];
-    // nextShape.forEach((cell,i) => {
-    //   if (terminos[1].includes(i)) $(cell[i+10]).addClass('red');
-    //   else $(cell).removeClass('red');
-    // });
+    color = colors[shapes.indexOf(shape)];
   }
 
   function cellChange() {
@@ -153,6 +143,9 @@ $(() => {
         if(!shape.some(i => i % 10 === 0 || $(cells[i - 1]).hasClass('fixed'))) shape = shape.map((i) => i -= 1);
         break;
       case 38:
+        console.log(gameSounds);
+        gameSounds.src = '/sounds/sfx_sounds_button6.wav';
+        gameSounds.play();
         if (!(shape.join('').includes('O') || shape.join('').includes('NaN'))) rotateShape();
         break;
       case 40:
@@ -161,7 +154,25 @@ $(() => {
     cellChange();
   }
 
-  function rotateIndex() {
+  function getKeyDesktop(e) {
+    e.preventDefault();
+    key = e.keyCode;
+    keyDown();
+  }
+
+  //TODO: diagonal corners will do both horizontal and vertical actions
+  //TODO: doesn't work for ipad
+  function getKeyMobile(e) {
+    const X = e.touches[0].pageX;
+    const Y = e.touches[0].pageY;
+    if (Y < 120) key = 38;
+    else if (Y > 420) key = 40;
+    else if (X < 80 && Y > 120 && Y < 420) key = 37;
+    else if (X > 230 && Y > 120 && Y < 420) key = 39;
+    keyDown();
+  }
+
+  function rotateIndex(newIndex, canRotate, modulos, rotatedShape) {
     canRotate = !($(cells[newIndex]).hasClass('fixed') || $(cells[newIndex]) > lastCell);
     modulos.push(newIndex % 10);
     rotatedShape.push(newIndex);
@@ -169,54 +180,49 @@ $(() => {
 
   //TODO: Can rotate off the top and bottom edges
   function rotateShape() {
-    rotatedShape = [];
-    modulos = [];
+    const rotatedShape = [];
+    let modulos = [];
+    const canRotate = true;
+    let newIndex = 0;
     let length = shape.length;
     while (canRotate && length--) {
       const diff = Math.abs(shape[2] - shape[length]);
       switch (diff) {
         case 1:
           newIndex = shape[length] < shape[2] ? shape[2] - 10 : shape[2] + 10;
-          rotateIndex();
+          rotateIndex(newIndex, canRotate, modulos, rotatedShape);
           break;
         case 10:
           newIndex = shape[length] < shape[2] ? shape[2] + 1 : shape[2] - 1;
-          rotateIndex();
+          rotateIndex(newIndex, canRotate, modulos, rotatedShape);
           break;
         case 9:
           newIndex = shape[length] < shape[2] ? shape[2] + 11 : shape[2] - 11;
-          rotateIndex();
+          rotateIndex(newIndex, canRotate, modulos, rotatedShape);
           break;
         case 11:
           newIndex = shape[length] < shape[2] ? shape[2] - 9 : shape[2] + 9;
-          rotateIndex();
+          rotateIndex(newIndex, canRotate, modulos, rotatedShape);
           break;
         case 20:
           newIndex = shape[length] < shape[2] ? shape[2] + 2 : shape[2] - 2;
-          rotateIndex();
+          rotateIndex(newIndex, canRotate, modulos, rotatedShape);
           break;
         case 2:
           newIndex = shape[length] < shape[2] ? shape[2] - 20 : shape[2] + 20;
-          rotateIndex();
+          rotateIndex(newIndex, canRotate, modulos, rotatedShape);
           break;
         default:
           rotatedShape.push(shape[length]);
       }
     }
 
-    if (shape[2] % 10 === 0) {
-      if (modulos.includes(8)) shape = shape.map((i) => i += 2);
-      else if (modulos.includes(9)) shape = shape.map((i) => i += 1);
+    modulos = modulos.sort();
+    if (shape[2] % 10 <= 1 && (modulos.includes(8) || modulos.includes(9))) {
+      shape = shape.map((i) => i += 10 - modulos[modulos.length-1]);
       rotateShape();
-    } else if (shape[2] % 10 === 1 && modulos.includes(9)) {
-      shape = shape.map((i) => i += 1);
-      rotateShape();
-    } else if (shape[2] % 10 === 9) {
-      if (modulos.includes(1)) shape = shape.map((i) => i -= 2);
-      else if (modulos.includes(0)) shape = shape.map((i) => i -= 1);
-      rotateShape();
-    } else if (shape[2] % 10 === 8 && modulos.includes(0)) {
-      shape = shape.map((i) => i -= 1);
+    } else if (shape[2] % 10 >= 8 && (modulos.includes(0) || modulos.includes(1))) {
+      shape = shape.map((i) => i -= modulos[0] + 1);
       rotateShape();
     } else if (canRotate) shape = rotatedShape.reverse();
   }
@@ -225,35 +231,35 @@ $(() => {
   function checkForEnd() {
     if (shape.some((i) => i + 10 > lastCell || shape.some((i) => $(cells[i + 10]).hasClass('fixed')))) {
       clearInterval(timerId);
+      gameSounds.src = '/sounds/sfx_sounds_impact7.wav';
+      gameSounds.play();
       shape.forEach((i) => {
         $(cells[i]).addClass(`fixed ${color}`);
       });
       shapes = [[4,5,14,15,'O'],[4,5,14,24], [4,5,15,25],[4,14,15,25], [4,5,6,7],[5,14,15,24],[5,14,15,16]];
-      // terminos.splice(0,1);
-      // // shapeIndex += 1;
       gamePlay();
     }
   }
 
   function checkRow() {
-    lines = 0;
+    let lines = 0;
     for (let i = 0; i < rowsArray.length; i++) {
       let clear = true;
-      clear = rowsArray[i].every((el) => $(cells[el]).hasClass('fixed'));
+      clear = rowsArray[i].every((sq) => $(cells[sq]).hasClass('fixed'));
       if (clear)  {
         lines += 1;
-        rowsArray[i].forEach((el) => {
-          $(cells[el]).removeAttr('class').prependTo($ul);
-        });
+        gameSounds.src = '/sounds/sfx_movement_portal2.wav';
+        gameSounds.play();
+        rowsArray[i].forEach((sq) => $(cells[sq]).removeAttr('class').prependTo($ul));
         cells = [].slice.call($('ul li'));
       }
     }
-    updateScore();
+    updateScore(lines);
     updateGameboard();
   }
 
 
-  function updateScore() {
+  function updateScore(lines) {
     switch (lines) {
       case 1:
         score += 100*level;
@@ -278,8 +284,9 @@ $(() => {
     }
   }
 
-  //TODO: event of no cookie
   function endGame() {
+    music.src = '/sounds/15 Ending.mp3';
+    music.play();
     $endScreen.removeClass('hidden');
     $mainScreen.addClass('hidden');
     currentHighScore = getCookie();
@@ -297,8 +304,18 @@ $(() => {
       $newScore.text(`Your Score: ${score}`);
       setCookie();
     }
+  }
 
-    if (level / 1000 === 8 ) $h2.html(`Congratulations, you beat the game! <br><br> Your final score is ${score}`);
+  function beatGame() {
+    if (level / 1000 === 8) {
+      gameSounds.src = '/sounds/Player Wins.mp3';
+      gameSounds.play();
+      $endScreen.removeClass('hidden');
+      $mainScreen.addClass('hidden');
+      currentHighScore = getCookie();
+      $h2.html(`Congratulations, you beat the game! <br><br> Your final score is ${score}`);
+      $endScreen.css({backgroundImage: 'url(/images/fireworks.gif)', color: 'white'});
+    }
   }
 
   //Cookie Functions
@@ -328,24 +345,10 @@ $(() => {
     }
   }
 
+
   //Event Listeners
-  $(document).on('keydown', (e) => {
-    e.preventDefault();
-    key = e.keyCode;
-    keyDown();
-  });
-
-  //TODO: diagonal corners will do both horizontal and vertical actions
-  $(document).on('touchstart',(e) => {
-    const X = e.touches[0].pageX;
-    const Y = e.touches[0].pageY;
-    if (Y < 120) key = 38;
-    else if (Y > 420) key = 40;
-    else if (X < 80 && Y > 120 && Y < 420) key = 37;
-    else if (X > 230 && Y > 120 && Y < 420) key = 39;
-    keyDown();
-  });
-
+  $(document).on('keydown', getKeyDesktop);
+  $(document).on('touchstart', getKeyMobile);
   $startBtn.one('click', gamePlay);
   $musicBtn.on('click', playMusic);
 

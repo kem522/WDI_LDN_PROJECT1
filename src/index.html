@@ -16,6 +16,7 @@
   <body>
     <!-- <h1>WDI Project 1: JavaScript Game</h1> -->
     <div class="container">
+      <audio src="" class="game-sounds"></audio>
         <div class="start-screen">
           <img src="images/tetris-4.png" alt="tetris logo">
           <button class="start">Start Game!</button>
@@ -27,64 +28,6 @@
         </div>
       <div class="main-screen hidden">
         <div class="game-info">
-          <!-- <div class="next-shape">
-            <ul>
-              <li class="invisible"></li>
-              <li class="invisible"></li>
-              <li class="invisible"></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li class="invisible"></li>
-              <li class="invisible"></li>
-
-              <li class="invisible"></li>
-              <li class="invisible"></li>
-              <li class="invisible"></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li class="invisible"></li>
-              <li class="invisible"></li>
-
-              <li class="invisible"></li>
-              <li class="invisible"></li>
-              <li class="invisible"></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li class="invisible"></li>
-              <li class="invisible"></li>
-
-              <li class="invisible"></li>
-              <li class="invisible"></li>
-              <li class="invisible"></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li class="invisible"></li>
-              <li class="invisible"></li>
-
-              <li class="invisible"></li>
-              <li class="invisible"></li>
-              <li class="invisible"></li>
-              <li class="invisible"></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li class="invisible"></li>
-              <li class="invisible"></li>
-            </ul>
-          </div> -->
           <p class="scoreboard"></p>
           <p>Level:<span class="current-level">1<span><p>
           <div class="instructions">
@@ -92,6 +35,13 @@
               <li>Press <i class="fas fa-arrow-left"></i> to move left</li>
               <li>Press <i class="fas fa-arrow-right"></i> to move right</li>
               <li>Press <i class="fas fa-arrow-up"></i> to rotate</li>
+              <li>Press <i class="fas fa-arrow-down"></i> to speed up</li>
+            </ol>
+            <ol class="mobile-instructions hidden">
+              <li>Tap left to move left</li>
+              <li>Tap right to move right</li>
+              <li>Tap above to rotate</li>
+              <li>Tap below to speed up</li>
             </ol>
           </div>
           <button class="musicBtn"><i class="fas fa-volume-up"></i><audio src="sounds/tetris-gameboy-02.mp3" class="music" type="mp3" autoplay loopx></audio></button>
@@ -387,21 +337,6 @@
           <li></li>
         </ul>
       </div>
-      <!-- <div class="keypad hidden">
-        <ul>
-          <li></li>
-          <li class="up" value="38"></li>
-          <li></li>
-
-          <li class="left" value="37"></li>
-          <li></li>
-          <li class="right" value="39"></li>
-
-          <li></li>
-          <li class="down" value="40"></li>
-          <li></li>
-        </ul>
-      </div> -->
     </div>
   </body>
 </html>
