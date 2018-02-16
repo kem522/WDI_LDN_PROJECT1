@@ -339,9 +339,16 @@ $(() => {
     }
   }
 
+  function mobileBackground() {
+    if ($(window).width() < 600) {
+      $endScreen.css({background: 'transparent', color: 'black'});
+    }
+  }
+
   //Event Listeners
   $(document).on('keydown', getKeyDesktop);
   $(document).on('touchstart', getKeyMobile);
+  $(window).on('resize', mobileBackground);
   $startBtn.one('click', gamePlay);
   $musicBtn.on('click', playMusic);
 
