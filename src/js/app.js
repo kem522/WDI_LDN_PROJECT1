@@ -171,8 +171,6 @@ $(() => {
     keyDown();
   }
 
-  //TODO: diagonal corners will do both horizontal and vertical actions
-  //TODO: doesn't work for ipad
   function getKeyMobile(e) {
     const X = e.touches[0].pageX;
     const Y = e.touches[0].pageY;
@@ -188,7 +186,6 @@ $(() => {
     rotatedShape.push(newIndex);
   }
 
-  //TODO: Blocks should bounce down when cannot rotate at ceiling
   function rotateShape() {
     let canRotate = true;
     let newIndex = 0;
@@ -294,19 +291,24 @@ $(() => {
     $endScreen.removeClass('hidden');
     $mainScreen.addClass('hidden');
     currentHighScore = getCookie();
+    console.log(currentHighScore);
+    console.log(score);
 
     if (score > currentHighScore) {
+      if($(window).width() > 600) $endScreen.css({backgroundImage: 'url(/images/clouds.gif)'});
       $h2.html('You Beat Your Highscore!');
       $oldScore.text(`Previous High Score: ${currentHighScore}`);
       $newScore.text(`Your New High Score: ${score}`);
       setCookie();
     } else if (score < currentHighScore) {
+      if($(window).width() > 600) $endScreen.css({backgroundImage: 'url(/images/stars.gif)', color: 'white'});
       $h2.html('Better Luck Next Time');
       $oldScore.text(`Current High Score: ${currentHighScore}`);
       $newScore.text(`Your Score: ${score}`);
-    } else {
+    } else if (score === currentHighScore){
+      if($(window).width() > 600) $endScreen.css({backgroundImage: 'url(/images/stars.gif)', color: 'white'});
       $h2.html('Game Over');
-      $newScore.text(`Your New High Score: ${score}`);
+      $newScore.text(`Your High Score: ${score}`);
       setCookie();
     }
   }
@@ -319,7 +321,7 @@ $(() => {
     $mainScreen.addClass('hidden');
     currentHighScore = getCookie();
     $h2.html(`Congratulations, you beat the game! <br><br> Your final score is ${score}`);
-    $endScreen.css({backgroundImage: 'url(/images/fireworks.gif)', color: 'white'});
+    if($(window).width() > 600) $endScreen.css({backgroundImage: 'url(/images/fireworks.gif)', color: 'white'});
   }
 
 
