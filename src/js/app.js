@@ -324,9 +324,7 @@ $(() => {
     if($(window).width() > 600) $endScreen.css({backgroundImage: 'url(/images/fireworks.gif)', color: 'white'});
   }
 
-
-
-  //Audio Functions
+  //Audio & Styling Functions
   function playMusic() {
     if (musicOn) {
       music.pause();
