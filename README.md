@@ -28,3 +28,11 @@ At the end of the game the game over screen will display the player's score. I h
 ---
 
 I was very pleased with my finished game as I was able to implement a lot more of the original Tetris functionality than I predicted. With more time I planned to add a next shape feature to display the shape of the next block to fall, a hold shape feature to allow the player to save a block to use later, a high score leaderboard, some animations such as when the line clears and improve the mobile version of the game. I would also like to research a better rotation function as well as a better way to randomize the order of blocks.
+
+## Setup instructions
+
+- Clone or download the repo
+- Install dependencies with `yarn install`
+- Launch the app with `gulp`
+
+>**NB**: You will need to have installed `gulp-cli` globally
