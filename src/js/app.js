@@ -1,4 +1,4 @@
-//Variables
+//VARIABLES
 //Gameplay Variables
 let shapes = [[4,5,14,15,'O'],[4,5,14,24], [4,5,15,25],[4,14,15,25], [4,5,6,7],[5,14,15,24],[5,14,15,16]];
 let shape = null;
@@ -42,10 +42,25 @@ let currentHighScore = 0;
 //Audio & Animation Variables
 let musicOn = true;
 
+//FUNCTIONS
+//Cookie Functions
+function setCookie() {
+  document.cookie = `highscore=${score}`;
+}
+
+function getCookie(){
+  const allCookies = document.cookie.split(';');
+  allCookies.forEach((c) => {
+    if (c.includes('highscore')) newHighScore = c.split('=')[1];
+  });
+  return newHighScore;
+}
+
+
 $(() => {
   console.log('JS Loaded');
 
-  //DOM Dependent Variables
+  //DOM DEPENDENT VARIABLES
   //Gameplay Variables
   let cells = [].slice.call($('.gamegrid li'));
   const lastCell = cells.length-1;
@@ -68,7 +83,7 @@ $(() => {
   const $h2 = $('h2');
   const gameSounds = $('.game-sounds')[0];
 
-  //Functions
+  //FUNCTIONS
   //Gameplay functions
   function gamePlay() {
     $startScreen.addClass('hidden');
@@ -173,7 +188,7 @@ $(() => {
     rotatedShape.push(newIndex);
   }
 
-  //TODO: Blocks should bounce down when cannot rotate at ceiling 
+  //TODO: Blocks should bounce down when cannot rotate at ceiling
   function rotateShape() {
     let canRotate = true;
     let newIndex = 0;
@@ -290,7 +305,8 @@ $(() => {
       $oldScore.text(`Current High Score: ${currentHighScore}`);
       $newScore.text(`Your Score: ${score}`);
     } else {
-      $newScore.text(`Your Score: ${score}`);
+      $h2.html('Game Over');
+      $newScore.text(`Your New High Score: ${score}`);
       setCookie();
     }
   }
@@ -306,18 +322,6 @@ $(() => {
     $endScreen.css({backgroundImage: 'url(/images/fireworks.gif)', color: 'white'});
   }
 
-  //Cookie Functions
-  function getCookie(){
-    const allCookies = document.cookie.split(';');
-    allCookies.forEach((c) => {
-      if (c.includes('highscore')) newHighScore = c.split('=')[1];
-    });
-    return newHighScore;
-  }
-
-  function setCookie() {
-    document.cookie = `highscore=${score}`;
-  }
 
 
   //Audio Functions
@@ -332,7 +336,6 @@ $(() => {
       $musicBtn.html('<i class="fas fa-volume-up"></i>');
     }
   }
-
 
   //Event Listeners
   $(document).on('keydown', getKeyDesktop);

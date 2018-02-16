@@ -22,6 +22,7 @@ html, body {
   background-size: cover;
 }
 
+//Screens
 .start-screen, .end-screen, .main-screen {
   margin-top:125px;
   width:340px;
@@ -33,64 +34,14 @@ html, body {
   align-items: center;
 }
 
+//Start Screen
 .start-screen {
   background-image: url('/images/stars.gif');
-}
-
-.main-screen {
-  flex-direction:row;
-}
-
-.game-info {
-  text-align:center;
-  max-width: 180px;
-  padding-left:15px;
-}
-
-.instructions {
-  text-align:left;
-  margin: 0 auto;
-  font-size: 10px;
-  word-spacing: 2px;
-  line-height: 20px;
-  ol {
-    list-style: inside;
-    padding-left:0px;
+  img {
+    max-width:75%;
   }
 }
 
-.end-screen {
-  font-size:15px;
-  text-align:center;
-  line-height: 30px;
-  h2 {
-    font-size:20px;
-  }
-}
-
-ul {
-  display: flex;
-  flex-wrap: wrap;
-  width: 160px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  margin: auto;
-    li {
-      border-radius:10%;
-      border: 1px solid;
-      height: 13px;
-      width: 13px;
-      font-size: 30px;
-      line-height: 30px;
-      background-color:transparent;
-    }
-  }
-
-
-img {
-  max-width:75%;
-}
 
 button {
   padding:10px;
@@ -104,11 +55,62 @@ button {
   border-radius:10%;
 }
 
-.musicBtn {
-  width: 35px;
+//Main-Screen
+.main-screen {
+  flex-direction:row;
+  .game-info {
+    text-align:center;
+    max-width: 180px;
+    padding-left:15px;
+  }
+  .instructions {
+    text-align:left;
+    margin: 0 auto;
+    font-size: 10px;
+    word-spacing: 2px;
+    line-height: 20px;
+    ol {
+      list-style: inside;
+      padding-left:0px;
+    }
+  }
+  .musicBtn {
+    width: 35px;
+  }
 }
 
+//Gamegrid
+ul {
+  display: flex;
+  flex-wrap: wrap;
+  width: 160px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  margin: auto;
+  li {
+    border-radius:10%;
+    border: 1px solid;
+    height: 13px;
+    width: 13px;
+    font-size: 30px;
+    line-height: 30px;
+    background-color:transparent;
+  }
+}
 
+//End
+.end-screen {
+  font-size:15px;
+  text-align:center;
+  line-height: 30px;
+  justify-content: flex-start;
+  h2 {
+    font-size:20px;
+  }
+}
+
+//Tetrominos & Grid
 .hidden {
   display:none;
 }
@@ -149,6 +151,8 @@ button {
   background-color: #ed7931;
 }
 
+
+//Mobile Responsive
 @media only screen and (max-width:600px) {
   //TODO: consider changing background image to full size and changing contain to cover
   .container {
@@ -162,10 +166,52 @@ button {
   }
 
   .start-screen, .end-screen, .main-screen {
-    margin-top:80px;
+    margin-top:25%;
     width:65%;
-    height:35%;
+    height:45%;
     background:transparent;
+  }
+
+  .main-screen {
+    align-items:flex-start;
+    padding-top:20px;
+    .game-info {
+      text-align:left;
+      max-width: 100px;
+      margin-right:10px;
+      p {
+        font-size:8px;
+      }
+      .instructions {
+        text-align:left;
+        padding:0;
+        font-size: 8px;
+        word-spacing: 2px;
+        line-height: 10px;
+
+        ol {
+          display:none;
+        }
+
+        .mobile-instructions {
+          display: block;
+        }
+      }
+    }
+    .musicBtn {
+      margin: 0;
+      i {
+        font-size:5px;
+      }
+      }
+    ul {
+      width: 80px;
+      margin: 0;
+      li {
+        height: 6px;
+        width: 6px;
+      }
+    }
   }
 
   .end-screen {
@@ -179,54 +225,9 @@ button {
 
   }
 
-  .main-screen {
-    align-items:flex-start;
-    padding-top:20px;
-  }
-
-  ul {
-    width: 80px;
-    margin: 0;
-      li {
-        height: 6px;
-        width: 6px;
-      }
-    }
-
-
-    .game-info {
-      text-align:left;
-      max-width: 100px;
-      margin-right:10px;
-      p {
-        font-size:8px;
-      }
-    }
-
-    .instructions {
-      text-align:left;
-      padding:0;
-      font-size: 8px;
-      word-spacing: 2px;
-      line-height: 10px;
-
-      ol {
-        display:none;
-      }
-
-      .mobile-instructions {
-        display: block;
-      }
-    }
-
-     .musicBtn {
-    margin: 0;
-      i {
-        font-size:5px;
-      }
-  }
 }
 
+//Mobile Responsive iPhone X
 @media only screen and (device-width : 375px) {
   .container {
     margin:0;
@@ -239,5 +240,4 @@ button {
     background-repeat: no-repeat;
     background-size: contain;
   }
-
 }
