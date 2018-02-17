@@ -30,7 +30,7 @@ html, body {
   border-radius:8px;
   display:flex;
   flex-direction:column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
 }
 
@@ -46,7 +46,6 @@ html, body {
 button {
   padding:10px;
   box-shadow: inset -14px -14px 15px -17px rgba(0,0,0,0.75);
-  margin:20px 40px;
   font-family:'Press Start 2P', cursive;
   color:white;
   background-color:#6fa31d;

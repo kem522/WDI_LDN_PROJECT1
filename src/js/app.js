@@ -1,6 +1,15 @@
 //VARIABLES
 //Gameplay Variables
-let shapes = [[4,5,14,15,'O'],[4,5,14,24], [4,5,15,25],[4,14,15,25], [4,5,6,7],[5,14,15,24],[5,14,15,16]];
+const shapes = {
+  O: [4,5,14,15],
+  J: [4,5,14,24],
+  L: [4,5,15,25],
+  S: [4,14,15,25],
+  I: [4,5,6,7],
+  Z: [5,14,15,24],
+  T: [5,14,15,16]
+};
+let isSquare = false;
 let shape = null;
 const colors = ['yellow','blue','orange','green','cyan','red','purple'];
 let color = '';
@@ -36,7 +45,6 @@ const rowsArray = [
 //Score and Level Variables
 let score = 0;
 let level = 1;
-let newHighScore = 0;
 let currentHighScore = 0;
 
 //Audio & Animation Variables
@@ -45,15 +53,11 @@ let musicOn = true;
 //FUNCTIONS
 //Cookie Functions
 function setCookie() {
-  document.cookie = `highscore=${score}`;
+  localStorage.setItem('score', score);
 }
 
 function getCookie(){
-  const allCookies = document.cookie.split(';');
-  allCookies.forEach((c) => {
-    if (c.includes('highscore')) newHighScore = c.split('=')[1];
-  });
-  return newHighScore;
+  return localStorage.getItem('score');
 }
 
 
@@ -108,7 +112,7 @@ $(() => {
     for (let i = 20; i < 30; i++) {
       if ($(cells[i]).hasClass('fixed')) {
         clearInterval(timerId);
-        endGame();
+        return endGame();
       }
     }
   }
@@ -132,8 +136,10 @@ $(() => {
   }
 
   function getShapes() {
-    shape = shapes[Math.floor(Math.random()*shapes.length)];
-    color = colors[shapes.indexOf(shape)];
+    const shapeKey = Object.keys(shapes)[Math.floor(Math.random()*Object.keys(shapes).length)];
+    isSquare = shapeKey === 'O';
+    shape = shapes[shapeKey];
+    color = colors[Object.keys(shapes).indexOf(shapeKey)];
   }
 
   function cellChange() {
@@ -157,7 +163,7 @@ $(() => {
       case 38:
         gameSounds.src = '/sounds/sfx_sounds_button6.wav';
         gameSounds.play();
-        if (!(shape.join('').includes('O') || shape.join('').includes('NaN'))) rotateShape();
+        if (!isSquare) rotateShape();
         break;
       case 40:
         if(!shape.some(i => i + 10 > lastCell || $(cells[i + 10]).hasClass('fixed'))) shape = shape.map((i) => i += 10);
@@ -197,23 +203,20 @@ $(() => {
       switch (true) {
         case diff === 9:
           newIndex = shape[length] < shape[2] ? shape[2] + 11 : shape[2] - 11;
-          updateRotationArrays(newIndex, modulos, rotatedShape);
           break;
         case diff === 11:
           newIndex = shape[length] < shape[2] ? shape[2] - 9 : shape[2] + 9;
-          updateRotationArrays(newIndex, modulos, rotatedShape);
           break;
         case diff < 10:
           newIndex = shape[length] < shape[2] ? shape[2] - diff*10 : shape[2] + diff*10;
-          updateRotationArrays(newIndex, modulos, rotatedShape);
           break;
         case diff >= 10:
           newIndex = shape[length] < shape[2] ? shape[2] + diff/10 : shape[2] - diff/10;
-          updateRotationArrays(newIndex, modulos, rotatedShape);
           break;
         default:
           rotatedShape.push(shape[length]);
       }
+      updateRotationArrays(newIndex, modulos, rotatedShape);
     }
 
     canRotate = rotatedShape.every((i) => !($(cells[i]).hasClass('fixed') || i > lastCell || i < 20));
@@ -237,7 +240,6 @@ $(() => {
       shape.forEach((i) => {
         $(cells[i]).addClass(`fixed ${color}`);
       });
-      shapes = [[4,5,14,15,'O'],[4,5,14,24], [4,5,15,25],[4,14,15,25], [4,5,6,7],[5,14,15,24],[5,14,15,16]];
       gamePlay();
     }
   }
