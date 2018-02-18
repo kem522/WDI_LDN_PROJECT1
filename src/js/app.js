@@ -45,22 +45,11 @@ const rowsArray = [
 //Score and Level Variables
 let score = 0;
 let level = 1;
-let currentHighScore = 0;
 
 //Audio & Animation Variables
 let musicOn = true;
 
 //FUNCTIONS
-//Cookie Functions
-function setCookie() {
-  localStorage.setItem('score', score);
-}
-
-function getCookie(){
-  return localStorage.getItem('score');
-}
-
-
 $(() => {
   console.log('JS Loaded');
 
@@ -112,7 +101,7 @@ $(() => {
     for (let i = 20; i < 30; i++) {
       if ($(cells[i]).hasClass('fixed')) {
         clearInterval(timerId);
-        return endGame();
+        endGame();
       }
     }
   }
@@ -292,27 +281,26 @@ $(() => {
     music.play();
     $endScreen.removeClass('hidden');
     $mainScreen.addClass('hidden');
-    currentHighScore = getCookie();
-    console.log(currentHighScore);
-    console.log(score);
+    let currentHighScore = 0;
+    if (localStorage.getItem('currentHighScore')) currentHighScore = localStorage.getItem('currentHighScore');
 
-    if (score > currentHighScore) {
+    if (currentHighScore === 0){
+      if($(window).width() > 600) $endScreen.css({backgroundImage: 'url(/images/stars.gif)', color: 'white'});
+      $h2.text('Game Over');
+      $newScore.text(`Your High Score: ${score}`);
+    } else if (score > currentHighScore) {
       if($(window).width() > 600) $endScreen.css({backgroundImage: 'url(/images/clouds.gif)'});
-      $h2.html('You Beat Your Highscore!');
+      $h2.text('You Beat Your Highscore!');
       $oldScore.text(`Previous High Score: ${currentHighScore}`);
       $newScore.text(`Your New High Score: ${score}`);
-      setCookie();
     } else if (score < currentHighScore) {
       if($(window).width() > 600) $endScreen.css({backgroundImage: 'url(/images/stars.gif)', color: 'white'});
-      $h2.html('Better Luck Next Time');
+      $h2.text('Better Luck Next Time');
       $oldScore.text(`Current High Score: ${currentHighScore}`);
       $newScore.text(`Your Score: ${score}`);
-    } else if (score === currentHighScore){
-      if($(window).width() > 600) $endScreen.css({backgroundImage: 'url(/images/stars.gif)', color: 'white'});
-      $h2.html('Game Over');
-      $newScore.text(`Your High Score: ${score}`);
-      setCookie();
     }
+
+    if (score > currentHighScore) localStorage.setItem('currentHighScore', score);
   }
 
   function beatGame() {
@@ -321,7 +309,6 @@ $(() => {
     music.play();
     $endScreen.removeClass('hidden');
     $mainScreen.addClass('hidden');
-    currentHighScore = getCookie();
     $h2.html(`Congratulations, you beat the game! <br><br> Your final score is ${score}`);
     if($(window).width() > 600) $endScreen.css({backgroundImage: 'url(/images/fireworks.gif)', color: 'white'});
   }
